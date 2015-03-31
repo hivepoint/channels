@@ -1,21 +1,28 @@
-// Copyright (c) 2015, <your name>. All rights reserved. Use of this source code
-// is governed by a BSD-style license that can be found in the LICENSE file.
-
 library chnls_core.test;
 
 import 'package:unittest/unittest.dart';
 import 'package:chnls_core/chnls_core.dart';
+import 'package:unittest/html_config.dart';
+import 'dart:core';
 
 main() {
-  group('A group of tests', () {
-    Awesome awesome;
-
+  useHtmlConfiguration();
+  group('All tests', () {
     setUp(() {
-      awesome = new Awesome();
     });
 
-    test('First Test', () {
-      expect(awesome.isAwesome, isTrue);
+    test('Message test:  add/check', () {
+      MessageService msgs = new MessageService();
+      msgs.clearAllMessages();
+      msgs.addMessage("hello world 1");
+      msgs.addMessage("hello world 2");
+      msgs.addMessage("hello world 3");
+      var callback = expectAsync((msgs) {
+        print(msgs.toString());
+        expect(msgs.length, 3);
+      });
+      msgs.getMessages().toList().then(callback);
+      print("done!");
     });
   });
 }
