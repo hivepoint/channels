@@ -5,7 +5,5 @@ version: 0.0.1
 dev_dependencies:
   unittest: any
 dependencies:
-  async: any
-  json_object: any  
   exportable: any
   

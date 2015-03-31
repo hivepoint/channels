@@ -9,3 +9,7 @@ body {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-touch-callout: none;
 }
+
+html /deep/ [autofocus] {
+    color: #03a9f4;
+}

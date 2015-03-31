@@ -1,0 +1,26 @@
+<link rel="import" href="../../../../packages/polymer/polymer.html">
+<link rel="import" href="../../../../packages/paper_elements/paper_action_dialog.html">
+<link rel="import" href="../../../../packages/paper_elements/paper_input_decorator.html">
+<link rel="import" href="../../../../packages/paper_elements/paper_autogrow_textarea.html">
+<link rel="import" href="../../../../packages/paper_elements/paper_button.html">
+<link rel="import" href="../../../../packages/paper_elements/paper_toast.html">
+
+<polymer-element name="compose-dialog">
+    <template>
+        <style>
+        
+        </style>
+        <paper-action-dialog autoCloseDisabled backdrop closeSelector="#btnCancel" id="dlg" 
+            heading="{{heading}}" opened="{{showing}}" transition="core-transition-bottom" on-core-overlay-open="{{onDialogOpen}}">
+          <paper-input-decorator id="composeDecorator" label="Your message" error="Message cannot be empty" floatingLabel>
+            <paper-autogrow-textarea id="textContainer" rows="10" maxRows="20" style="width: 500px;">
+              <textarea id="text" on-input="{{onInputChanged}}"></textarea>
+            </paper-autogrow-textarea>
+          </paper-input-decorator>
+          <paper-button id="btnCancel" affirmative>Cancel</paper-button>
+          <paper-button affirmative autofocus default on-click="{{onSend}}">Send</paper-button>
+        </paper-action-dialog>
+        <paper-toast id="sentToast" text="Message sent" ></paper-toast>
+    </template>
+    <script type="application/dart" src="compose_dialog.dart"></script>
+</polymer-element>
