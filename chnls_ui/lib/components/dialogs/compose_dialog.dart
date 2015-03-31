@@ -1,4 +1,7 @@
+library compose_dialog;
+
 import 'dart:html';
+import 'dart:async';
 import 'package:chnls_core/chnls_core.dart';
 import 'package:polymer/polymer.dart';
 import 'package:paper_elements/paper_autogrow_textarea.dart';
@@ -14,6 +17,9 @@ class ComposeDialog extends PolymerElement {
     TextAreaElement _text;
     PaperInputDecorator _decorator;
     PaperToast _toast;
+    
+    final StreamController<Message> _controller = new StreamController<Message>();
+    Stream<Message> get onMessageSent => _controller.stream;
     
     ComposeDialog.created() : super.created();
     
@@ -33,6 +39,7 @@ class ComposeDialog extends PolymerElement {
             showing = false;
             MessageService service = new MessageService();
             service.addMessage(body).then((var message) {
+                _controller.add(message);
                 _toast.show();
             });
         }
@@ -43,6 +50,7 @@ class ComposeDialog extends PolymerElement {
             _text.value = "";
             _textContainer.update();
             _decorator.updateLabelVisibility("");
+            _decorator.isInvalid = false;
         }
     }
     

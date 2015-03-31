@@ -1,0 +1,36 @@
+<link rel="import" href="../../../packages/polymer/polymer.html">
+
+<polymer-element name="message-item">
+    <template>
+        <style>
+        #msgItemContainer {
+            position: relative;
+            padding: 15px 0;
+            border-bottom: 1px solid #d8d8d8;
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        
+        .itemTransition {
+            transition: transform 0.5s ease-in 0.2s, opacity 0.4s ease-in 0.1s;
+        }
+        
+        .user {
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .message {
+            color: #808080;
+            overflow: hidden;
+        }
+        </style>
+        <div id="msgItemContainer">
+            <div class="user">{{sender}}</div>
+            <div class="message">{{messageBody}}</div>
+        </div>
+    </template>
+    <script type="application/dart" src="message_item.dart"></script>
+</polymer-element>
