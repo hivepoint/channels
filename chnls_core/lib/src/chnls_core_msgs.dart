@@ -68,14 +68,13 @@ class MessageService {
     return _messageTransaction(readWrite:true).then((store) {
       return store.add(message.toDb()).then((newKey) {
         message.key = newKey;
-        return message;
       });
     });
   }
   
   Future clearAllMessages() {
     return _messageTransaction(readWrite:true).then((store) {
-      return store.clear();
+       store.clear();
     });
   }
 }
