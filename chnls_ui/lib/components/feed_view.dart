@@ -3,6 +3,8 @@ import 'package:polymer/polymer.dart';
 
 @CustomTag('feed-view')
 class FeedView extends PolymerElement {
+    @observable bool composeShowing = false;
+    
     DivElement _itemsPanel;
     
     FeedView.created() : super.created();
@@ -14,6 +16,10 @@ class FeedView extends PolymerElement {
     
     void refresh() {
         _itemsPanel.children.clear();
+    }
+    
+    void onNewMessage(MouseEvent e) {
+        composeShowing = !composeShowing;
     }
     
 }
