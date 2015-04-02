@@ -18,8 +18,8 @@ class ComposeDialog extends PolymerElement {
     PaperInputDecorator _decorator;
     PaperToast _toast;
     
-    final StreamController<Message> _controller = new StreamController<Message>();
-    Stream<Message> get onMessageSent => _controller.stream;
+    final StreamController<MessageV0> _controller = new StreamController<MessageV0>();
+    Stream<MessageV0> get onMessageSent => _controller.stream;
     
     ComposeDialog.created() : super.created();
     
