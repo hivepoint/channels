@@ -1,0 +1,38 @@
+<link rel="import" href="../../../packages/core_elements/core_tooltip.html">
+
+<polymer-element name="user-icon">
+    <template>
+        <style>
+        :host {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .uimage {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+        
+        .timage {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        </style>
+        <div>
+            <core-tooltip>
+                <img class="uimage" alt="" _src="{{imageUrl}}">
+                <div tip>
+                    <img class="uimage timage" alt="" _src="{{imageUrl}}">
+                    <div style="display: inline-block; vertical-align: middle; font-size: 12px;">
+                        <div style="font-weight:bold;">{{userName}}</div>
+                        <div>{{userEmail}}</div>
+                    </div>
+                </div>
+            </core-tooltip>
+        </div>
+    </template>
+    <script type="application/dart" src="user_icon.dart"></script>
+</polymer-element>
