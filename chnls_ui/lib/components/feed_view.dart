@@ -10,7 +10,7 @@ class FeedView extends PolymerElement {
     @observable bool composeShowing = false;
     
     DivElement _itemsPanel;
-    StreamSubscription<Message> _subscription = null;
+    StreamSubscription<MessageV0> _subscription = null;
     var _newMessageSub = null;
     
     FeedView.created() : super.created();
@@ -18,7 +18,7 @@ class FeedView extends PolymerElement {
     void attached() {
         _itemsPanel = shadowRoot.querySelector("#itemsPanel");
         ComposeDialog dlg =  shadowRoot.querySelector("#compose");
-        _newMessageSub = dlg.onMessageSent.listen((Message newMessage) {
+        _newMessageSub = dlg.onMessageSent.listen((MessageV0 newMessage) {
             MessageItem item = (new Element.tag("message-item") as MessageItem);
             item.message = newMessage;
             item.animateIn = true;
@@ -46,7 +46,7 @@ class FeedView extends PolymerElement {
     void refresh() {
         _itemsPanel.children.clear();
         MessageService service = new MessageService();
-        _subscription = service.getMessages().listen((Message msg) {
+        _subscription = service.getMessages().listen((MessageV0 msg) {
             MessageItem item = (new Element.tag("message-item") as MessageItem);
             item.message = msg;
             _itemsPanel.append(item);
@@ -60,7 +60,7 @@ class FeedView extends PolymerElement {
         composeShowing = !composeShowing;
     }
     
-    void onNewMessageSent(Message newMessage) {
+    void onNewMessageSent(MessageV0 newMessage) {
         window.alert("New message: ${newMessage.body}");
     }
     

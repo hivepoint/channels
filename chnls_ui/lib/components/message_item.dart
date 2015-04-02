@@ -8,7 +8,7 @@ class MessageItem extends PolymerElement {
     @observable String sender = "";
     @observable String messageBody = "";
     
-    Message message;
+    MessageV0 message;
     bool animateIn = false;
     
     DivElement _container;

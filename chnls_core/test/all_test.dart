@@ -20,18 +20,31 @@ main() {
 //       auth.authorize().then(callback1);
 //    });
     
-    test('Message test:  add/check', () {
-      MessageService msgs = new MessageService();
-      msgs.clearAllMessages();
-      msgs.addMessage("joe@test.com", "hello world 1");
-      msgs.addMessage("joe@test.com", "hello world 2");
-      msgs.addMessage("joe@test.com", "hello world 3");
-      var callback = expectAsync((msgs) {
-        print(msgs.toString());
-        expect(msgs.length, 3);
+//    test('Message test:  add/check', () {
+//      MessageService msgs = new MessageService();
+//      msgs.clearAllMessages();
+//      msgs.addMessage("joe@test.com", "hello world 1");
+//      msgs.addMessage("joe@test.com", "hello world 2");
+//      msgs.addMessage("joe@test.com", "hello world 3");
+//      var callback = expectAsync((msgs) {
+//        print(msgs.toString());
+//        expect(msgs.length, 3);
+//      });
+//      msgs.getMessages().toList().then(callback);
+//      print("done!");
+//    });
+
+  
+    test('Group test:  add/check', () {
+      var callback = expectAsync((List<Group> groups) {
+        expect(groups.length, equals(1));
       });
-      msgs.getMessages().toList().then(callback);
-      print("done!");
+      GroupsService sut = new GroupsService();
+      sut.deleteAll().then((_) {
+        sut.addGroup("group1", new Set<Contact>()).then((_) {
+          sut.groups().toList().then(callback);
+        });
+      });
     });
   });
 }

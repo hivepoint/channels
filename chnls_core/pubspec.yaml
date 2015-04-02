@@ -8,4 +8,5 @@ dependencies:
   exportable: any
   googleapis_auth: any
   googleapis: any
+  uuid: any
   

@@ -1,10 +1,10 @@
 part of chnls_core;
 
-abstract class Message {
+abstract class MessageV0 {
   String body;
 }
 
-abstract class MessageV2 extends Message {
+abstract class MessageV2 extends MessageV0 {
   DateTime sent;
   String messageIdHeader;
   String sender;
@@ -16,7 +16,7 @@ abstract class MessageV2 extends Message {
 }
 
 @export
-class DbMessageV1 extends Object with Exportable implements Message {
+class DbMessageV1 extends Object with Exportable implements MessageV0 {
   Object key;
   @export String body;
 
@@ -76,7 +76,7 @@ class MessageService {
 
   Future<idb.ObjectStore> _messageTransaction({readWrite: false}) {
     return _idb
-        .open("chnls_gmail",
+        .open("chnls_messages_v0",
             version: 1, onUpgradeNeeded: _initializeMessages)
         .then((db) {
       var t;
@@ -94,21 +94,21 @@ class MessageService {
     db.createObjectStore(MESSAGES_STORE, autoIncrement: true);
   }
 
-  Stream<Message> getMessages() {
-    StreamController<Message> source = new StreamController<Message>();
+  Stream<MessageV0> getMessages() {
+    StreamController<MessageV0> source = new StreamController<MessageV0>();
     _messageTransaction().then((store) {
       var cursor = store.openCursor(autoAdvance: true);
       cursor.listen((c) {
-        Message m = new DbGmailMessageV2._fromDb(c.key, c.value);
+        MessageV0 m = new DbGmailMessageV2._fromDb(c.key, c.value);
         source.add(m);
       }, onDone: () => source.close());
     });
     return source.stream;
   }
 
-  Future<Message> addMessage(String from, String body) {
+  Future<MessageV0> addMessage(String from, String body) {
     var message = new DbGmailMessageV2.fromFromAndBody(from, body);
-    var completer = new Completer<Message>();
+    var completer = new Completer<MessageV0>();
     _messageTransaction(readWrite: true).then((store) {
       store.add(message.toDb()).then((newKey) {
         message.key = newKey;
