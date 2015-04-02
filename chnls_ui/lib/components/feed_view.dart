@@ -28,6 +28,7 @@ class FeedView extends PolymerElement {
     }
     
     void refresh() {
+        // TODO: scroll to top
         if (_collection == null) {
             groupColor = "white";
             groupName = "";

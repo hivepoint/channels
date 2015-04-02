@@ -1,9 +1,10 @@
 <link rel="import" href="../../../packages/paper_elements/paper_fab.html">
+<link rel="import" href="../../../packages/core_elements/core_scroll_header_panel.html">
 
 <polymer-element name="feed-view">
     <template>
         <style>
-        core-header-panel {
+        core-scroll-header-panel {
             background-color: #fff;
             height: 100%;
         }
@@ -23,17 +24,20 @@
             position: fixed;
             bottom: 15px;
             right: 15px;
+            background-color: {{groupColor}};
         }
         </style>
-        <core-header-panel hero-id="tile" hero mode="waterfall">
+        <core-scroll-header-panel hero-id="tile" hero condenses keepCondensedHeader mode="waterfall">
             <core-toolbar  class="tall">
                 <paper-icon-button icon="arrow-back" on-click="{{onBackClick}}"></paper-icon-button>
                 <span flex>{{groupName}}</span>
                 <paper-icon-button icon="search"></paper-icon-button>
             </core-toolbar>
-            <div id="itemsPanel" horizontal layout wrap></div>
-            <paper-fab class="fab" icon="create" title="New message" on-click="{{onNewMessage}}"></paper-fab>
-        </core-header-panel>
+            <div cross-fade>
+                <div id="itemsPanel"></div>
+                <paper-fab class="fab" icon="create" title="New message" on-click="{{onNewMessage}}"></paper-fab>
+            </div>
+        </core-scroll-header-panel>
     </template>
     <script type="application/dart" src="feed_view.dart"></script>
 </polymer-element>
