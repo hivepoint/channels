@@ -3,8 +3,8 @@ part of core_ui;
 final Router router = new Router();
 
 class Router {
-    final StreamController<Collection> _groupController = new StreamController<Collection>();
-    Stream<Collection> get onOpenGroup => _groupController.stream;
+    final StreamController<Group> _groupController = new StreamController<Group>();
+    Stream<Group> get onOpenGroup => _groupController.stream;
     
     final StreamController _collectionsController = new StreamController();
     Stream get onOpenCollectionPage => _collectionsController.stream;
@@ -16,8 +16,8 @@ class Router {
         _collectionsController.add(null);
     }
     
-    void openGroupPage(Collection c) {
-        _groupController.add(c);
+    void openGroupPage(Group g) {
+        _groupController.add(g);
     }
     
 //    window.onHashChange.listen((HashChangeEvent e) {

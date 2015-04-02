@@ -38,11 +38,11 @@ class ComposeDialog extends PolymerElement {
         } else {
             _decorator.isInvalid = false;
             showing = false;
-            MessageService service = new MessageService();
-            service.addMessage(body).then((var message) {
-                _controller.add(message);
+//            MessageService service = new MessageService();
+//            service.addMessage(body).then((var message) {
+//                _controller.add(message);
+//            });
                 _toast.show();
-            });
         }
     }
     

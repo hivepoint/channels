@@ -1,19 +1,23 @@
 import 'dart:html';
 import 'package:core_elements/core_header_panel.dart';
 import 'package:polymer/polymer.dart';
+import 'package:chnls_core/chnls_core.dart';
 import "../core/core_ui.dart";
 import "group_tile.dart";
+import 'dialogs/create_group_dialog.dart';
 
 @CustomTag('collection-view')
 class CollectionView extends PolymerElement {
     CollectionView.created() : super.created();
+    
+    @observable bool showCreateDialog = false;
     
     DivElement _itemsPanel;
     DivElement _nonePanel;
     CoreHeaderPanel _container;
     
     List _subs = [];
-    List<Collection> collections = [];
+    List<Group> _groups = [];
     
     void attached() {
         super.attached();
@@ -23,6 +27,13 @@ class CollectionView extends PolymerElement {
         
         _subs.add(window.onResize.listen((var e) {
             refreshPanelHeight();
+        }));
+        
+        CreateGroupDialog dlg =  shadowRoot.querySelector("#createGroupDialog");
+        _subs.add(dlg.onGroupCreated.listen((Group g) {
+            _groups.add(g);
+            addGroupTile(g);
+            refreshLayout();
         }));
         
         refresh();
@@ -40,37 +51,46 @@ class CollectionView extends PolymerElement {
         uiHelper.navOpen = true;
     }
     
-    void onCreateChannel(var event) {
-        collections.clear();
-        collections.add(new Collection("Soccer team", "Scheduling soccer games", uiHelper.getRandomDarkColor()));
-        collections.add(new Collection("Engineering", "Engineering discussions related to design and code", uiHelper.getRandomDarkColor()));
-        collections.add(new Collection("Interesting", "All the interesting stuff you could find.", uiHelper.getRandomDarkColor()));
-        collections.add(new Collection("System design", "System design is hot. Let's talk about it here.", uiHelper.getRandomDarkColor()));
-        collections.add(new Collection("Whatever", "", uiHelper.getRandomDarkColor()));
-        refresh();
+    void onCreateGroup(var event) {
+        showCreateDialog = !showCreateDialog;
     }
     
     void refresh() {
+        _groups.clear();
+        
+        GroupsService service = new GroupsService();
+        service.groups().listen((Group group) {
+            _groups.add(group);
+        }).onDone(() {
+            refreshView();
+        });
+    }
+    
+    void refreshView() {
         _itemsPanel.children.clear();
-        if (collections.isEmpty) {
+        for (Group g in _groups) {
+            addGroupTile(g);
+        }
+        refreshLayout();
+    }
+    
+    void refreshLayout() {
+        if (_groups.isEmpty) {
             _nonePanel.style.display = "block";
         } else {
             _nonePanel.style.display = null;
-            for (Collection c in collections) {
-                addCollectionTile(c);
-            }
         }
         refreshPanelHeight();
     }
     
-    void addCollectionTile(Collection c) {
+    void addGroupTile(Group group) {
         var div = new Element.div();
         div..setAttribute("flex", "true")
            ..setAttribute("auto", "true")
            ..className = "groupTile";
         var tile = new Element.tag("group-tile") as GroupTile;
         tile.setAttribute("hero-id", "tile");
-        tile.collection = c;
+        tile.group = group;
         div.append(tile);
         if (_itemsPanel.children.isEmpty) {
             _itemsPanel.append(div);
@@ -80,7 +100,7 @@ class CollectionView extends PolymerElement {
     }
     
     void refreshPanelHeight() {
-        bool setHeight = _container.offsetWidth >= 1200;
+        bool setHeight = _container.offsetWidth >= 1200 && _itemsPanel.children.length > 0;
         if (!setHeight) {
             setHeight = _itemsPanel.children.length > 1;
         }

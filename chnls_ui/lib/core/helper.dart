@@ -30,11 +30,3 @@ class UiHelper {
         return _pendingDarkColors.removeAt(0);
     }
 }
-
-class Collection {
-    String name;
-    String color;
-    String description;
-    
-    Collection(this.name, this.description, this.color);
-}

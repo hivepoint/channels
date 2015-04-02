@@ -1,0 +1,24 @@
+<link rel="import" href="../../../../packages/paper_elements/paper_action_dialog.html">
+<link rel="import" href="../../../../packages/paper_elements/paper_input_decorator.html">
+<link rel="import" href="../../../../packages/paper_elements/paper_input.html">
+<link rel="import" href="../../../../packages/paper_elements/paper_button.html">
+
+<polymer-element name="create-group-dialog">
+    <template>
+        <style>
+            
+        </style>
+        <paper-action-dialog autoCloseDisabled backdrop closeSelector="#btnCancel" id="dlg" 
+            heading="New Group" opened="{{showing}}" transition="core-transition-bottom" on-core-overlay-open="{{onDialogOpen}}">
+            <div style="width: 400px;">
+                <paper-input-decorator id="nameDecorator" label="Group name" floatingLabel error="Invalid group name">
+                    <input id="name" is="core-input" on-input="{{onInputChanged}}">
+                 </paper-input-decorator>
+                <paper-input id="description" label="Description" floatingLabel style="display:block;"></paper-input>
+            </div>
+            <paper-button id="btnCancel" affirmative>Cancel</paper-button>
+            <paper-button affirmative autofocus default on-click="{{onCreate}}">Create</paper-button>
+        </paper-action-dialog>
+    </template>
+    <script type="application/dart" src="create_group_dialog.dart"></script>
+</polymer-element>

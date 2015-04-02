@@ -2,8 +2,6 @@ import 'dart:html';
 import 'dart:async';
 import 'package:polymer/polymer.dart';
 import 'package:chnls_core/chnls_core.dart';
-import 'message_item.dart';
-import 'dialogs/compose_dialog.dart';
 
 @CustomTag('feed-view-old')
 class FeedViewOld extends PolymerElement {
@@ -18,17 +16,17 @@ class FeedViewOld extends PolymerElement {
     void attached() {
         super.attached();
         _itemsPanel = shadowRoot.querySelector("#itemsPanel");
-        ComposeDialog dlg =  shadowRoot.querySelector("#compose");
-        _newMessageSub = dlg.onMessageSent.listen((Message newMessage) {
-            MessageItem item = (new Element.tag("message-item") as MessageItem);
-            item.message = newMessage;
-            item.animateIn = true;
-            if (_itemsPanel.children.isEmpty) {
-                _itemsPanel.append(item);
-            } else {
-                _itemsPanel.insertBefore(item, _itemsPanel.children.first);
-            }
-        });
+//        ComposeDialog dlg =  shadowRoot.querySelector("#compose");
+//        _newMessageSub = dlg.onMessageSent.listen((Message newMessage) {
+//            MessageItem item = (new Element.tag("message-item") as MessageItem);
+//            item.message = newMessage;
+//            item.animateIn = true;
+//            if (_itemsPanel.children.isEmpty) {
+//                _itemsPanel.append(item);
+//            } else {
+//                _itemsPanel.insertBefore(item, _itemsPanel.children.first);
+//            }
+//        });
         
         refresh();
     }
@@ -47,12 +45,12 @@ class FeedViewOld extends PolymerElement {
     
     void refresh() {
         _itemsPanel.children.clear();
-        MessageService service = new MessageService();
-        _subscription = service.getMessages().listen((Message msg) {
-            MessageItem item = (new Element.tag("message-item") as MessageItem);
-            item.message = msg;
-            _itemsPanel.append(item);
-        });
+//        MessageService service = new MessageService();
+//        _subscription = service.getMessages().listen((Message msg) {
+//            MessageItem item = (new Element.tag("message-item") as MessageItem);
+//            item.message = msg;
+//            _itemsPanel.append(item);
+//        });
         _subscription.onDone(() {
             _subscription = null;
         });
@@ -63,7 +61,7 @@ class FeedViewOld extends PolymerElement {
     }
     
     void onNewMessageSent(Message newMessage) {
-        window.alert("New message: ${newMessage.body}");
+//        window.alert("New message: ${newMessage.body}");
     }
     
 }
