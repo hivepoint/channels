@@ -4,7 +4,6 @@ import 'package:polymer/polymer.dart';
 import 'package:chnls_core/chnls_core.dart';
 import "../core/core_ui.dart";
 import "group_tile.dart";
-import 'dialogs/create_group_dialog.dart';
 
 @CustomTag('collection-view')
 class CollectionView extends PolymerElement {
@@ -18,6 +17,7 @@ class CollectionView extends PolymerElement {
     
     List _subs = [];
     List<Group> _groups = [];
+    Map<String, Group> _groupMap = {};
     
     void attached() {
         super.attached();
@@ -25,15 +25,18 @@ class CollectionView extends PolymerElement {
         _nonePanel = shadowRoot.querySelector("#nonePanel");
         _container = shadowRoot.querySelector("#container");
         
-        _subs.add(window.onResize.listen((var e) {
-            refreshPanelHeight();
+        GroupsService service = new GroupsService();
+        _subs.add(service.onNewGroup().listen((Group group) {
+            if (!_groupMap.containsKey(group.gid)) {
+                _groups.add(group);
+                _groupMap[group.gid] = group;
+                addGroupTile(group);
+                refreshLayout();
+            }
         }));
         
-        CreateGroupDialog dlg =  shadowRoot.querySelector("#createGroupDialog");
-        _subs.add(dlg.onGroupCreated.listen((Group g) {
-            _groups.add(g);
-            addGroupTile(g);
-            refreshLayout();
+        _subs.add(window.onResize.listen((var e) {
+            refreshPanelHeight();
         }));
         
         refresh();
@@ -57,10 +60,12 @@ class CollectionView extends PolymerElement {
     
     void refresh() {
         _groups.clear();
+        _groupMap.clear();
         
         GroupsService service = new GroupsService();
         service.groups().listen((Group group) {
             _groups.add(group);
+            _groupMap[group.gid] = group;
         }).onDone(() {
             refreshView();
         });
