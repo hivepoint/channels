@@ -2,7 +2,7 @@ part of chnls_core;
 
 String generateUid() {
   Uuid uuid = new Uuid();
-  return uuid.v5(Uuid.NAMESPACE_URL, "www.channels.cc");
+  return uuid.v4();
 }
 
 @export

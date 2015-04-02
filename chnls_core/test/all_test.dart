@@ -37,12 +37,14 @@ main() {
   
     test('Group test:  add/check', () {
       var callback = expectAsync((List<Group> groups) {
-        expect(groups.length, equals(1));
+        expect(groups.length, equals(2));
       });
       GroupsService sut = new GroupsService();
       sut.deleteAll().then((_) {
         sut.addGroup("group1", new Set<Contact>()).then((_) {
-          sut.groups().toList().then(callback);
+          sut.addGroup("group2", new Set<Contact>()).then((_){
+            sut.groups().toList().then(callback);
+          });
         });
       });
     });
