@@ -3,10 +3,13 @@ import 'package:core_elements/core_header_panel.dart';
 import 'package:polymer/polymer.dart';
 import "../core/core_ui.dart";
 import "group_tile.dart";
+import 'dialogs/create_group_dialog.dart';
 
 @CustomTag('collection-view')
 class CollectionView extends PolymerElement {
     CollectionView.created() : super.created();
+    
+    @observable bool showCreateDialog = false;
     
     DivElement _itemsPanel;
     DivElement _nonePanel;
@@ -25,6 +28,13 @@ class CollectionView extends PolymerElement {
             refreshPanelHeight();
         }));
         
+        CreateGroupDialog dlg =  shadowRoot.querySelector("#createGroupDialog");
+        _subs.add(dlg.onGroupCreated.listen((Collection c) {
+            collections.add(c);
+            addCollectionTile(c);
+            refreshLayout();
+        }));
+        
         refresh();
     }
     
@@ -40,25 +50,23 @@ class CollectionView extends PolymerElement {
         uiHelper.navOpen = true;
     }
     
-    void onCreateChannel(var event) {
-        collections.clear();
-        collections.add(new Collection("Soccer team", "Scheduling soccer games", uiHelper.getRandomDarkColor()));
-        collections.add(new Collection("Engineering", "Engineering discussions related to design and code", uiHelper.getRandomDarkColor()));
-        collections.add(new Collection("Interesting", "All the interesting stuff you could find.", uiHelper.getRandomDarkColor()));
-        collections.add(new Collection("System design", "System design is hot. Let's talk about it here.", uiHelper.getRandomDarkColor()));
-        collections.add(new Collection("Whatever", "", uiHelper.getRandomDarkColor()));
-        refresh();
+    void onCreateGroup(var event) {
+        showCreateDialog = !showCreateDialog;
     }
     
     void refresh() {
         _itemsPanel.children.clear();
+        for (Collection c in collections) {
+            addCollectionTile(c);
+        }
+        refreshLayout();
+    }
+    
+    void refreshLayout() {
         if (collections.isEmpty) {
             _nonePanel.style.display = "block";
         } else {
             _nonePanel.style.display = null;
-            for (Collection c in collections) {
-                addCollectionTile(c);
-            }
         }
         refreshPanelHeight();
     }

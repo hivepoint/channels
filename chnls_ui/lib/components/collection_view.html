@@ -1,6 +1,7 @@
 <link rel="import" href="../../../packages/polymer/polymer.html">
 <link rel="import" href="../../../packages/paper_elements/paper_button.html">
 <link rel="import" href="group_tile.html">
+<link rel="import" href="dialogs/create_group_dialog.html">
 
 <polymer-element name="collection-view">
     <template>
@@ -57,15 +58,15 @@
                 <paper-icon-button icon="menu" on-click="{{onMenuClick}}"></paper-icon-button>
                 <span flex>All channels</span>
                 <paper-icon-button icon="search"></paper-icon-button>
-                <paper-icon-button icon="add" title="Create a group"></paper-icon-button>
+                <paper-icon-button icon="add" title="Create a group" on-click="{{onCreateGroup}}"></paper-icon-button>
             </core-toolbar>
             <div id="itemsPanel" horizontal layout wrap></div>
             <div id="nonePanel">
                 <div style="margin-bottom: 20px;">You don't have any groups.</div>
-                <paper-button raised class="signinButton" on-click="{{onCreateChannel}}">Create a group</paper-button>
+                <paper-button raised class="signinButton" on-click="{{onCreateGroup}}">Create a group</paper-button>
             </div>
         </core-header-panel>
-        
+        <create-group-dialog id="createGroupDialog" showing="{{showCreateDialog}}"></create-group-dialog>
     </template>
     <script type="application/dart" src="collection_view.dart"></script>
 </polymer-element>
