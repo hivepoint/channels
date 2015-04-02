@@ -1,6 +1,7 @@
 import 'package:polymer/polymer.dart';
-import "core/core_ui.dart";
 import 'package:core_elements/core_drawer_panel.dart';
+import 'package:chnls_core/chnls_core.dart';
+import "core/core_ui.dart";
 import "components/feed_view.dart";
 
 @CustomTag('main-app2')
@@ -31,8 +32,8 @@ class MainApp2 extends PolymerElement {
             pageIndex = 0;
         }));
         
-        _subs.add(router.onOpenGroup.listen((Collection c) {
-            _feedView.collection = c;
+        _subs.add(router.onOpenGroup.listen((Group group) {
+            _feedView.group = group;
             pageIndex = 1;
         }));
     }

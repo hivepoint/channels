@@ -5,7 +5,7 @@ import 'package:polymer/polymer.dart';
 import 'package:paper_elements/paper_input.dart';
 import 'package:core_elements/core_input.dart';
 import 'package:paper_elements/paper_input_decorator.dart';
-import "../../core/core_ui.dart";
+import 'package:chnls_core/chnls_core.dart';
 
 @CustomTag("create-group-dialog")
 class CreateGroupDialog extends PolymerElement {
@@ -16,8 +16,8 @@ class CreateGroupDialog extends PolymerElement {
     PaperInput _description;
     PaperInputDecorator _decorator;
     
-    final StreamController<Collection> _controller = new StreamController<Collection>();
-    Stream<Collection> get onGroupCreated => _controller.stream;
+    final StreamController<Group> _controller = new StreamController<Group>();
+    Stream<Group> get onGroupCreated => _controller.stream;
     
     void attached() {
         super.attached();
@@ -45,9 +45,11 @@ class CreateGroupDialog extends PolymerElement {
             _decorator.isInvalid = true;
         } else {
             _decorator.isInvalid = false;
-            String desc = _description.value.trim();
             showing = false;
-            _controller.add(new Collection(name, desc, uiHelper.getRandomDarkColor()));
+            GroupsService service = new GroupsService();
+            service.addGroup(name, new Set<Contact>()).then((Group g) {
+                _controller.add(g);
+            });
         }
     }
 }

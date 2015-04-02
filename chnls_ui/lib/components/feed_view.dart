@@ -1,5 +1,6 @@
 import 'package:polymer/polymer.dart';
 import "../core/core_ui.dart";
+import 'package:chnls_core/chnls_core.dart';
 
 @CustomTag("feed-view")
 class FeedView extends PolymerElement {
@@ -9,10 +10,10 @@ class FeedView extends PolymerElement {
     @observable String groupDescription = "";
     @observable String groupColor = "white";
     
-    Collection _collection;
+    Group _group;
     
-    set collection(Collection c) {
-        _collection = c;
+    set group(Group g) {
+        _group = g;
         if (hasBeenAttached) {
             refresh();
         }
@@ -29,14 +30,14 @@ class FeedView extends PolymerElement {
     
     void refresh() {
         // TODO: scroll to top
-        if (_collection == null) {
+        if (_group == null) {
             groupColor = "white";
             groupName = "";
             groupDescription = "";
         } else {
-            groupColor = _collection.color;
-            groupName = _collection.name;
-            groupDescription = _collection.description;
+            groupColor = uiHelper.getRandomDarkColor();
+            groupName = _group.name;
+            groupDescription = "";
         }
     }
     

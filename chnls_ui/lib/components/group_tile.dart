@@ -2,6 +2,7 @@ library group_tile;
 
 import 'dart:async';
 import 'package:polymer/polymer.dart';
+import 'package:chnls_core/chnls_core.dart';
 import "../core/core_ui.dart";
 
 @CustomTag('group-tile')
@@ -13,7 +14,7 @@ class GroupTile extends PolymerElement {
     @observable String groupTitle = "";
     @observable String groupColor = "white";
     
-    Collection collection;
+    Group group;
     
     void attached() {
         super.attached();
@@ -26,23 +27,23 @@ class GroupTile extends PolymerElement {
     }
     
     void refresh() {
-        if (collection == null) {
+        if (group == null) {
             groupColor = "white";
             groupTitle = "";
         } else {
-            groupColor = collection.color;
-            groupTitle = collection.name;
+            groupColor = uiHelper.getRandomDarkColor();
+            groupTitle = group.name;
         }
     }
     
     void onOpenGroup(var event) {
-        if (collection != null) {
+        if (group != null) {
             if (_lastOpenedGroup != null) {
                 _lastOpenedGroup.attributes.remove("hero");
             }
             setAttribute("hero", "true");
             _lastOpenedGroup = this;
-            router.openGroupPage(collection);
+            router.openGroupPage(group);
         }
     }
     
