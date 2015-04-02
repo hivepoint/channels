@@ -1,67 +1,45 @@
-import 'dart:html';
-import 'dart:async';
 import 'package:polymer/polymer.dart';
-import 'package:chnls_core/chnls_core.dart';
-import 'message_item.dart';
-import 'dialogs/compose_dialog.dart';
+import "../core/core_ui.dart";
 
-@CustomTag('feed-view')
+@CustomTag("feed-view")
 class FeedView extends PolymerElement {
-    @observable bool composeShowing = false;
-    
-    DivElement _itemsPanel;
-    StreamSubscription<Message> _subscription = null;
-    var _newMessageSub = null;
-    
     FeedView.created() : super.created();
     
+    @observable String groupName = "";
+    @observable String groupDescription = "";
+    @observable String groupColor = "white";
+    
+    Collection _collection;
+    
+    set collection(Collection c) {
+        _collection = c;
+        if (hasBeenAttached) {
+            refresh();
+        }
+    }
+    
     void attached() {
-        _itemsPanel = shadowRoot.querySelector("#itemsPanel");
-        ComposeDialog dlg =  shadowRoot.querySelector("#compose");
-        _newMessageSub = dlg.onMessageSent.listen((Message newMessage) {
-            MessageItem item = (new Element.tag("message-item") as MessageItem);
-            item.message = newMessage;
-            item.animateIn = true;
-            if (_itemsPanel.children.isEmpty) {
-                _itemsPanel.append(item);
-            } else {
-                _itemsPanel.insertBefore(item, _itemsPanel.children.first);
-            }
-        });
-        
+        super.attached();
         refresh();
     }
     
     void detached() {
-        if (_subscription != null) {
-            _subscription.cancel();
-            _subscription = null;
-        }
-        if (_newMessageSub != null) {
-            _newMessageSub.cancel();
-            _newMessageSub = null;
-        }
+        super.detached();
     }
     
     void refresh() {
-        _itemsPanel.children.clear();
-        MessageService service = new MessageService();
-        _subscription = service.getMessages().listen((Message msg) {
-            MessageItem item = (new Element.tag("message-item") as MessageItem);
-            item.message = msg;
-            _itemsPanel.append(item);
-        });
-        _subscription.onDone(() {
-            _subscription = null;
-        });
+        if (_collection == null) {
+            groupColor = "white";
+            groupName = "";
+            groupDescription = "";
+        } else {
+            groupColor = _collection.color;
+            groupName = _collection.name;
+            groupDescription = _collection.description;
+        }
     }
     
-    void onNewMessage(MouseEvent e) {
-        composeShowing = !composeShowing;
+    void onBackClick(var event) {
+        router.openCollectionsPage();
     }
-    
-    void onNewMessageSent(Message newMessage) {
-        window.alert("New message: ${newMessage.body}");
-    }
-    
 }

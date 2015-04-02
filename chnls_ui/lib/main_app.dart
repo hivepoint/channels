@@ -15,14 +15,15 @@ class MainApp extends PolymerElement {
     MainApp.created() : super.created();
     
     void attached() {
+        super.attached();
         _mainContainer = shadowRoot.querySelector("#centerContainer");
         _splash = shadowRoot.querySelector("#splash");
         
-        router.defaultPlace = new Place(placeKey: "main");
-        router.onPlaceChange.listen((Place place) {
-            handlePlace(place);
-        });
-        router.refresh();
+//        router.defaultPlace = new Place(placeKey: "main");
+//        router.onPlaceChange.listen((Place place) {
+//            handlePlace(place);
+//        });
+//        router.refresh();
         
         _splash.onDismissSplash.listen((_) {
             _splash.style.opacity = "0";
@@ -38,7 +39,7 @@ class MainApp extends PolymerElement {
         switch (place.key.toLowerCase()) {
             case 'main':
             default:
-                _mainContainer.append(new Element.tag("feed-view"));
+                _mainContainer.append(new Element.tag("feed-view-old"));
                 break;
         }
     }

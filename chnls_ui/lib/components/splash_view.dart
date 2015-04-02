@@ -15,6 +15,7 @@ class SplashView extends PolymerElement {
     Stream get onDismissSplash => _controller.stream;
     
     void attached() {
+        super.attached();
         _signinPanel = shadowRoot.querySelector("#signinPanal");
         refresh();
     }

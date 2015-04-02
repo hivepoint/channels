@@ -1,15 +1,21 @@
-<link rel="import" href="../../../packages/polymer/polymer.html">
-<link href="../../../packages/core_elements/core_icons.html" rel="import">
 <link rel="import" href="../../../packages/paper_elements/paper_fab.html">
-<link rel="import" href="dialogs/compose_dialog.html">
-<link rel="import" href="message_item.html">
 
 <polymer-element name="feed-view">
     <template>
         <style>
+        core-header-panel {
+            background-color: #fff;
+            height: 100%;
+        }
+        
+        core-toolbar {
+            background-color: {{groupColor}};
+            color: #fff;
+        }
+        
         #itemsPanel {
-            padding: 20px;
-            max-width: 800px;
+            padding: 20px 10px;
+            max-width: 850px;
             margin: 0 auto;
         }
         
@@ -19,9 +25,15 @@
             right: 15px;
         }
         </style>
-        <div id="itemsPanel"></div>
-        <paper-fab class="fab" icon="create" title="New message" on-click="{{onNewMessage}}"></paper-fab>
-        <compose-dialog id="compose" showing="{{composeShowing}}"></compose-dialog>
+        <core-header-panel hero-id="tile" hero mode="waterfall">
+            <core-toolbar  class="tall">
+                <paper-icon-button icon="arrow-back" on-click="{{onBackClick}}"></paper-icon-button>
+                <span flex>{{groupName}}</span>
+                <paper-icon-button icon="search"></paper-icon-button>
+            </core-toolbar>
+            <div id="itemsPanel" horizontal layout wrap></div>
+            <paper-fab class="fab" icon="create" title="New message" on-click="{{onNewMessage}}"></paper-fab>
+        </core-header-panel>
     </template>
     <script type="application/dart" src="feed_view.dart"></script>
 </polymer-element>

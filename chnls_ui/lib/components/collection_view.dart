@@ -16,6 +16,7 @@ class CollectionView extends PolymerElement {
     List<Collection> collections = [];
     
     void attached() {
+        super.attached();
         _itemsPanel = shadowRoot.querySelector("#itemsPanel");
         _nonePanel = shadowRoot.querySelector("#nonePanel");
         _container = shadowRoot.querySelector("#container");
@@ -32,6 +33,7 @@ class CollectionView extends PolymerElement {
             s.clear();
         }
         _subs.clear();
+        super.detached();
     }
     
     void onMenuClick(var event) {
@@ -67,6 +69,7 @@ class CollectionView extends PolymerElement {
            ..setAttribute("auto", "true")
            ..className = "groupTile";
         var tile = new Element.tag("group-tile") as GroupTile;
+        tile.setAttribute("hero-id", "tile");
         tile.collection = c;
         div.append(tile);
         if (_itemsPanel.children.isEmpty) {
