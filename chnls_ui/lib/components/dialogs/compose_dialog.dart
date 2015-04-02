@@ -24,6 +24,7 @@ class ComposeDialog extends PolymerElement {
     ComposeDialog.created() : super.created();
     
     void attached() {
+        super.attached();
         _textContainer = shadowRoot.querySelector("#textContainer");
         _text = shadowRoot.querySelector("#text");
         _decorator = shadowRoot.querySelector("#composeDecorator");

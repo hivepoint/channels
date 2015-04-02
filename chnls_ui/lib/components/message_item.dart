@@ -16,6 +16,7 @@ class MessageItem extends PolymerElement {
     MessageItem.created() : super.created();
     
     void attached() {
+        super.attached();
         if (message == null) {
             sender = "";
             messageBody = "";

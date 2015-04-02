@@ -1,0 +1,40 @@
+<link rel="import" href="../../packages/polymer/polymer.html">
+<link rel="import" href="../../packages/core_elements/core_drawer_panel.html">
+<link rel="import" href="../../packages/core_elements/core_header_panel.html">
+<link rel="import" href="../../packages/core_elements/core_toolbar.html">
+<link rel="import" href="../../packages/core_elements/core_animated_pages.html">
+<link rel="import" href="../../packages/paper_elements/paper_icon_button.html">
+<link rel="import" href="components/collection_view.html">
+<link rel="import" href="components/feed_view.html">
+
+<polymer-element name="main-app2">
+    <template>
+        <style>
+        core-toolbar {
+            background-color: #526E9C;
+            color: #fff;
+        }
+        
+        core-header-panel {
+            background-color: #fff;
+        }
+        
+        core-animated-pages {
+            height: 100%;
+        }
+        </style>
+        
+        <core-drawer-panel id="drawerPanel" forceNarrow>
+            <core-header-panel drawer mode="waterfall">
+                <core-toolbar>channels.cc</core-toolbar>
+            </core-header-panel>
+            <div main>
+                <core-animated-pages selected="{{pageIndex}}" transitions="hero-transition cross-fade">
+                    <collection-view></collection-view>
+                    <feed-view id="feedView"></feed-view>
+                </core-animated-pages>
+            </div>
+        </core-drawer-panel>
+    </template>
+    <script type="application/dart" src="main_app2.dart"></script>
+</polymer-element>

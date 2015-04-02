@@ -1,0 +1,66 @@
+<link rel="import" href="../../../packages/polymer/polymer.html">
+<link rel="import" href="../../../packages/paper_elements/paper_progress.html">
+<link rel="import" href="../../../packages/paper_elements/paper_button.html">
+
+<polymer-element name="splash-view">
+    <template>
+        <style>
+        #splashContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 10px;
+            text-align: center;
+            background-color: white;
+        }
+        
+        .splashLogo {
+            font-size: 100px;
+            font-weight: bold;
+            color: #0D2771;
+            padding: 40px 0 0;
+        }
+        
+        paper-progress {
+            display: block;
+            width: 100%;
+            transition: all 0.2s ease-in;
+        }
+        
+        .signinButton {
+            background: #4285f4;
+            color: #fff;
+            text-transform: none;
+            font-size: 14pt;
+        }
+        
+        #signinPanal {
+            display: none;
+            margin: 40px 0 10px;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.2s ease-in;
+        }
+        
+        paper-progress::shadow #progressContainer {
+          background-color: rgba(0,0,0,0.1);
+        }
+        
+        .notvisible {
+            opacity: 0;
+        }
+        </style>
+        <div id="splashContainer">
+            <div style="display: inline-block;">
+                <div class="splashLogo">channels</div>
+                <paper-progress class="{{progressStyle}}" indeterminate></paper-progress>
+            </div>
+            <div id="signinPanal">
+                <paper-button raised class="signinButton" on-click="{{onGoogleSignIn}}">Sign in using Google</paper-button>
+            </div>
+        </div>
+    </template>
+    <script type="application/dart" src="splash_view.dart"></script>
+</polymer-element>

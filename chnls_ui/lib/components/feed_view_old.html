@@ -1,0 +1,27 @@
+<link rel="import" href="../../../packages/polymer/polymer.html">
+<link href="../../../packages/core_elements/core_icons.html" rel="import">
+<link rel="import" href="../../../packages/paper_elements/paper_fab.html">
+<link rel="import" href="dialogs/compose_dialog.html">
+<link rel="import" href="message_item.html">
+
+<polymer-element name="feed-view-old">
+    <template>
+        <style>
+        #itemsPanel {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .fab {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+        }
+        </style>
+        <div id="itemsPanel"></div>
+        <paper-fab class="fab" icon="create" title="New message" on-click="{{onNewMessage}}"></paper-fab>
+        <compose-dialog id="compose" showing="{{composeShowing}}"></compose-dialog>
+    </template>
+    <script type="application/dart" src="feed_view_old.dart"></script>
+</polymer-element>
