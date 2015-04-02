@@ -1,10 +1,9 @@
 part of chnls_core;
 
 abstract class Group  {
-  String gid;
-  DateTime created;
-  String name;
-  Set<String> contactIds;
+  String get gid;
+  DateTime get created;
+  String get name;
   
   Future<Set<Contact>> get people;
   Stream<Conversation> get conversations;

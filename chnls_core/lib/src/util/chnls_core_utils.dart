@@ -8,5 +8,16 @@ String generateUid() {
 @export
 abstract class WithGuid {
   @export String gid;
-}
 
+  int get hashCode {
+    return gid.hashCode;
+  }
+
+  bool operator ==(other) {
+    if (other is WithGuid) {
+      return gid == other.gid;
+    } else {
+      return false;
+    }
+  }
+}

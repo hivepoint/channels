@@ -45,15 +45,19 @@ class GroupRecord extends DatabaseRecord with WithGuid {
 }
 
 class GroupImpl extends Group {
+  GroupRecord _record;
+  
   GroupImpl.fromDb(GroupRecord record) {
-    gid = record.gid;
-    created = record.created;
-    name = record.name;  
+    _record = record; 
   }
   
+  String get gid => _record.gid;
+  DateTime get created => _record.created;
+  String get name => _record.name;
+
   Future<Set<Contact>> get people {
     ContactsService contactService = new ContactsService();
-    return contactService.getContactsById(contactIds).toSet().then((contacts) => contacts);
+    return contactService.getContactsById(_record.contactIds).toSet().then((contacts) => contacts);
   }
   Stream<Conversation> get conversations {
     return new Stream<Conversation>.fromIterable(new List<Conversation>());
