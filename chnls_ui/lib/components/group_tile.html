@@ -1,0 +1,44 @@
+<link rel="import" href="../../../packages/polymer/polymer.html">
+<link rel="import" href="../../../packages/paper_elements/paper_shadow.html">
+
+<polymer-element name="group-tile">
+    <template>
+        <style>
+        :host {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        paper-shadow {
+            height: 100%;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.2s ease-in;
+        }
+        
+        core-toolbar {
+            background-color: {{groupColor}};
+            color: #fff;
+        }
+        
+        core-header-panel {
+            height: 100%;
+            background: white;
+        }
+        </style>
+        
+        <paper-shadow id="shell" z="1">
+            <core-header-panel mode="waterfall">
+                <core-toolbar class="medium-tall">
+                    <span flex>{{groupTitle}}</span>
+                    <paper-icon-button icon="fullscreen"></paper-icon-button>
+                </core-toolbar>
+                <div></div>
+            </core-header-panel>
+        </paper-shadow>
+    </template>
+    <script type="application/dart" src="group_tile.dart"></script>
+</polymer-element>

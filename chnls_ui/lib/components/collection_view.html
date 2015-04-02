@@ -1,0 +1,71 @@
+<link rel="import" href="../../../packages/polymer/polymer.html">
+<link rel="import" href="../../../packages/paper_elements/paper_button.html">
+<link rel="import" href="group_tile.html">
+
+<polymer-element name="collection-view">
+    <template>
+        <style>
+        core-toolbar {
+            background-color: #37474F;
+            color: #fff;
+        }
+        
+        core-header-panel {
+            background-color: #eaeaea;
+            height: 100%;
+        }
+        
+        #itemsPanel {
+            max-width: 2000px;
+            margin: 0 auto;
+            padding: 20px 10px;
+        }
+        
+        .chatTile {
+            min-width: 260px;
+            max-width: 450px;
+            margin: 5px;
+            min-height: 400px;
+            position: relative;
+        }
+        
+        .groupTile {
+            min-width: 450px;
+            max-width: 800px;
+            margin: 8px;
+            min-height: 400px;
+            position: relative;
+        }
+        
+        paper-button {
+            background: #4285f4;
+            color: #fff;
+            font-size: 13pt;
+            text-transform: none;
+            font-weight: 300;
+        }
+        
+        #nonePanel {
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+            display: none;
+        }
+        </style>
+        <core-header-panel id="container" mode="waterfall">
+            <core-toolbar>
+                <paper-icon-button icon="menu" on-click="{{onMenuClick}}"></paper-icon-button>
+                <span flex>All channels</span>
+                <paper-icon-button icon="search"></paper-icon-button>
+                <paper-icon-button icon="add" title="Create a group"></paper-icon-button>
+            </core-toolbar>
+            <div id="itemsPanel" horizontal layout wrap></div>
+            <div id="nonePanel">
+                <div style="margin-bottom: 20px;">You don't have any groups.</div>
+                <paper-button raised class="signinButton" on-click="{{onCreateChannel}}">Create a group</paper-button>
+            </div>
+        </core-header-panel>
+        
+    </template>
+    <script type="application/dart" src="collection_view.dart"></script>
+</polymer-element>
