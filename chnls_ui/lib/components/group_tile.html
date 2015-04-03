@@ -1,5 +1,6 @@
 <link rel="import" href="../../../packages/polymer/polymer.html">
 <link rel="import" href="../../../packages/paper_elements/paper_shadow.html">
+<link rel="import" href="user_icon.html">
 
 <polymer-element name="group-tile">
     <template>
@@ -35,6 +36,8 @@
                 <core-toolbar class="medium-tall">
                     <span flex>{{groupTitle}}</span>
                     <paper-icon-button icon="fullscreen" on-click="{{onOpenGroup}}"></paper-icon-button>
+                    <div id="usersPanel" class="bottom">
+                    </div>
                 </core-toolbar>
                 <div cross-fade>
                 </div>
