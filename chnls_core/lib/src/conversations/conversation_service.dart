@@ -15,9 +15,9 @@ class ConversationsService extends Service {
     _conversationAddedSource.close();
   }
   
-  Stream<Conversation> conversations() {
+  Stream<Conversation> conversationsByGroup(String groupId) {
     StreamController<Conversation> controller = new StreamController<Conversation>();
-    _store.listAll().listen((ConversationRecord record) {
+    _store.listByGroup(groupId).listen((ConversationRecord record) {
       Conversation conversation = new ConversationImpl.fromDb(record);
       return conversation;      
     }).onDone(() {
@@ -26,19 +26,8 @@ class ConversationsService extends Service {
     return controller.stream;
   }
 
-  Stream<Conversation> getConversationsById(Set<String> conversationIds) {
-    StreamController<Conversation> controller = new StreamController<Conversation>();
-    _store.listByIds(conversationIds).listen((ConversationRecord record) {
-      ConversationImpl conversation = new ConversationImpl.fromDb(record);
-      controller.add(conversation);
-    }).onDone(() {
-      controller.close();
-    });
-    return controller.stream;
-  }
-  
-  Future<Conversation> addConversation(String emailAddress, String name, String imageUri) {
-    return _store.add(emailAddress, name, imageUri).then((ConversationRecord record) {
+  Future<Conversation> addConversation(String groupId, String subject) {
+    return _store.add(groupId, subject).then((ConversationRecord record) {
       Conversation conversation = new ConversationImpl.fromDb(record);
      _conversationAddedSource.add(conversation);
      return conversation;
@@ -63,23 +52,12 @@ class ConversationImpl extends Conversation {
 
   String get gid => _record.gid;
   DateTime get created => _record.created;
-  DateTime get lastUpdated => _record.lastUpdated;
-  String get name => _record.name;
-  
-  Stream<Message> get messages {
-    
+  DateTime get lastMessage => _record.lastMessage;
+  String get subject => _record.subject;
+
+  Future<Group> get group {
+    GroupsService groupsService = new GroupsService();
+    return groupsService.getById(_record.groupId);
   }
-  
-  Stream<DraftMessage> get drafts {
     
-  }
-  
-  Stream<Message> onNewMessage() {
-    
-  }
-  
-  Future<DraftMessage> createDraft() {
-    
-  }
-  
 }

@@ -41,8 +41,7 @@ class ContactsCollection extends DatabaseCollection {
       int count = 0;
       _transaction().then((store) {
         contactIds.forEach((contactId) {
-          store.index(INDEX_GID);
-          store.getObject(contactId).then((Object value) {
+          store.index(INDEX_GID).get(contactId).then((Object value) {
             ContactRecord record = new ContactRecord();
             record.fromDb(value);
             controller.add(record);

@@ -4,6 +4,7 @@ class ConversationsCollection extends DatabaseCollection {
   static final ConversationsCollection _singleton = new ConversationsCollection._internal();
   factory ConversationsCollection() => _singleton;
   static const String CONVERSATIONS_STORE = "conversations";
+  static const String INDEX_GROUP_NAME = "group";
   ContactsService contactsService = new ContactsService();
 
   ConversationsCollection._internal() : super(CONVERSATIONS_STORE);
@@ -15,14 +16,16 @@ class ConversationsCollection extends DatabaseCollection {
     idb.ObjectStore store =
         db.createObjectStore(CONVERSATIONS_STORE, autoIncrement: true);
     store.createIndex(INDEX_GID, INDEX_GID, unique: true);
+    store.createIndex(INDEX_GROUP_NAME, ['groupId','lastMessage'], unique: false);
   }
 
-  Stream<ConversationRecord> listAll() {
+  Stream<ConversationRecord> listByGroup(String groupId) {
     StreamController<ConversationRecord> controller = new StreamController<ConversationRecord>();
-    _transaction().then((store) {
-      store.openCursor(autoAdvance: true).listen((idb.CursorWithValue value) {
+    _transaction().then((idb.ObjectStore store) {
+      idb.KeyRange keyRange = new idb.KeyRange.bound([groupId,  new DateTime.fromMillisecondsSinceEpoch(0)], [groupId, new DateTime.now()]);
+      store.index(INDEX_GROUP_NAME).openCursor(range: keyRange, direction: 'prev').listen((cursor) {
         ConversationRecord record = new ConversationRecord();
-        record.fromDb(value.value);
+        record.fromDb(cursor.value);
         controller.add(record);
       }).onDone(() {
         controller.close();
@@ -31,10 +34,10 @@ class ConversationsCollection extends DatabaseCollection {
     return controller.stream;
   }
 
-  Future<ConversationRecord> add(String subject) {
+  Future<ConversationRecord> add(String groupId, String subject) {
     DateTime now = new DateTime.now();
     ConversationRecord record = new ConversationRecord.fromFields(
-        generateUid(), now, now, subject);
+        generateUid(), now, new DateTime.fromMillisecondsSinceEpoch(0), groupId, subject);
     return _transaction(rw: true).then((store) {
       return store.add(record.toDb()).then((_) {
         return record;
@@ -46,14 +49,12 @@ class ConversationsCollection extends DatabaseCollection {
 @export
 class ConversationRecord extends DatabaseRecord with WithGuid {
   @export DateTime created;
-  @export DateTime lastUpdated;
+  @export DateTime lastMessage;
   @export String groupId;
-  @export Set<String> contactIds = new Set<String>();
-  @export Set<String> messageIds = new Set<String>();
-  @export Set<String> draftIds = new Set<String>();
+  @export String subject;
 
   ConversationRecord();
-  ConversationRecord.fromFields(String gid, DateTime this.created, DateTime this.lastUpdated,
+  ConversationRecord.fromFields(String gid, DateTime this.created, DateTime this.lastMessage,
       String this.groupId, String this.subject) {
     this.gid = gid;
   }

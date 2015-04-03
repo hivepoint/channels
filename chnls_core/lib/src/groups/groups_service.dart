@@ -47,6 +47,13 @@ class GroupsService extends Service {
   Future deleteAll() {
     return _store.removeAll();
   }
+  
+  Future<Group> getById(String groupId) {
+    return _store.getById(groupId).then((record) {
+      var group = new GroupImpl.fromDb(record);
+      return group;
+    });
+  }
 }
 
 class GroupImpl extends Group {
@@ -77,16 +84,13 @@ class GroupImpl extends Group {
     return contactsService.getContactsById(_record.contactIds);
   }
   Stream<Conversation> get conversations {
-    return new Stream<Conversation>.fromIterable(new List<Conversation>());
+    var conversationsService = new ConversationsService();
+    return conversationsService.conversationsByGroup(_record.gid);
   }
 
-  Stream<Conversation> onNewConversation() {
-    StreamController<Conversation> controller = new StreamController<Conversation>();
-    return controller.stream;
-  }
-  
-  Future<Conversation> createConversation(String topic, Set<String> contacts) {
-    throw new UnimplementedError("To do");
+  Future<Conversation> createConversation(String subject) {
+    var conversationsService = new ConversationsService();
+    return conversationsService.addConversation(_record.gid, subject);
   }
 
 }

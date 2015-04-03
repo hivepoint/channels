@@ -38,7 +38,7 @@ class GroupsCollection extends DatabaseCollection {
       record.tileColor = color;
       record.lastUpdated = new DateTime.now();
       return record.toDb();
-    }).then(() {
+    }).then((_) {
        return record;   
     });
   }
@@ -51,6 +51,16 @@ class GroupsCollection extends DatabaseCollection {
     record.contactIds.addAll(contactIds);
     return _transaction(rw: true).then((store) {
       return store.add(record.toDb()).then((_) {
+        return record;
+      });
+    });
+  }
+  
+  Future<GroupRecord> getById(String groupId) {
+    return _transaction().then((store) {
+      return store.index(INDEX_GID).get(groupId).then((idb.CursorWithValue cursor) {
+        GroupRecord record = new GroupRecord();
+        record.fromDb(cursor.value);
         return record;
       });
     });

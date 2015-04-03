@@ -12,7 +12,6 @@ abstract class Group  {
   Stream<Contact> get people;
   Stream<Conversation> get conversations;
 
-  Stream<Conversation> onNewConversation();
-  Future<Conversation> createConversation(String topic, Set<String> contacts);
+  Future<Conversation> createConversation(String subject);
 }
 

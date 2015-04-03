@@ -18,13 +18,15 @@ part 'src/groups/group.dart';
 part 'src/contacts/contact_service.dart';
 part 'src/contacts/contact.dart';
 
+part 'src/conversations/conversation_service.dart';
 part 'src/conversations/conversation.dart';
 part 'src/conversations/message.dart';
 
-part 'src/db/service.dart';
+part 'src/db/database_service.dart';
 part 'src/db/collection.dart';
 part 'src/db/groups.dart';
 part 'src/db/contacts.dart';
+part 'src/db/conversations.dart';
 
 part 'src/google/chnls_core_google.dart';
 
