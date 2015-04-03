@@ -4,8 +4,9 @@ abstract class Group  {
   String get gid;
   DateTime get created;
   String get name;
+  String get tileColor;
   
-  Future<Set<Contact>> get people;
+  Stream<Contact> get people;
   Stream<Conversation> get conversations;
 
   Stream<Conversation> onNewConversation();

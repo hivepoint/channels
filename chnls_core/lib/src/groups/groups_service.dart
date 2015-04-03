@@ -19,9 +19,12 @@ class GroupsService extends Service {
     return groupStore.listAll();
   }
 
-  Future<Group> addGroup(String name, Set<Contact> people) {
+  Future<Group> addGroup(String name, Iterable<Contact> people, String tileColor) {
     GroupsCollection groupStore = new GroupsCollection();
-    GroupRecord record = new GroupRecord.fromFields(generateUid(), name, new DateTime.now());
+    if (people == null) {
+      people = new Set<Contact>();
+    }
+    GroupRecord record = new GroupRecord.fromFields(generateUid(), name, new DateTime.now(), tileColor);
     people.forEach((person) {
       record.contactIds.add(person.gid);      
     });
