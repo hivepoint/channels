@@ -7,12 +7,6 @@ typedef Object DatabaseRecordUpdater(Object recordValue);
 abstract class DatabaseCollection {
   String collectionName;
 
-  Future insert(DatabaseRecord record) {
-    return _transaction(rw: true).then((idb.ObjectStore store) {
-      return store.put(record.toDb());
-    });
-  }
-
   DatabaseCollection(String this.collectionName);
 
   Future<idb.ObjectStore> _transaction({rw: false}) {

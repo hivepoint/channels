@@ -19,14 +19,13 @@ class ContactsCollection extends DatabaseCollection {
     store.createIndex(INDEX_EMAIL, INDEX_EMAIL, unique: true);
   }
 
-  Stream<Contact> listAll() {
-    StreamController<Contact> controller = new StreamController<Contact>();
+  Stream<ContactRecord> listAll() {
+    StreamController<ContactRecord> controller = new StreamController<ContactRecord>();
     _transaction().then((store) {
       store.openCursor(autoAdvance: true).listen((idb.CursorWithValue value) {
         ContactRecord record = new ContactRecord();
         record.fromDb(value.value);
-        Contact contact = new ContactImpl.fromDb(record);
-        controller.add(contact);
+        controller.add(record);
       }).onDone(() {
         controller.close();
       });
@@ -34,8 +33,8 @@ class ContactsCollection extends DatabaseCollection {
     return controller.stream;
   }
 
-  Stream<Contact> listByIds(Set<String> contactIds) {
-    StreamController<Contact> controller = new StreamController<Contact>();
+  Stream<ContactRecord> listByIds(Set<String> contactIds) {
+    StreamController<ContactRecord> controller = new StreamController<ContactRecord>();
     if (contactIds.isEmpty) {
       controller.close();
     } else {
@@ -46,8 +45,7 @@ class ContactsCollection extends DatabaseCollection {
           store.getObject(contactId).then((Object value) {
             ContactRecord record = new ContactRecord();
             record.fromDb(value);
-            Contact contact = new ContactImpl.fromDb(record);
-            controller.add(contact);
+            controller.add(record);
             count++;
             if (count == contactIds.length) {
               controller.close();
@@ -59,6 +57,15 @@ class ContactsCollection extends DatabaseCollection {
     return controller.stream;
   }
   
+  Future<ContactRecord> add(String emailAddress, String name, String imageUri) {
+    ContactRecord record = new ContactRecord.fromFields(generateUid(), emailAddress, name, new DateTime.now(), imageUri);
+    return _transaction(rw:true).then((store) {
+      return store.add(record.toDb()).then((_) {
+        return record;
+      });
+    });
+  }
+
 }
 
 @export
@@ -78,16 +85,3 @@ class ContactRecord extends DatabaseRecord with WithGuid {
   }
 }
 
-class ContactImpl extends Contact {
-  ContactRecord _record;
-
-  ContactImpl.fromDb(ContactRecord record) {
-    _record = record;
-  }
-
-  String get gid => _record.gid;
-  DateTime get created => _record.created;
-  String get name => _record.name;
-  String get emailAddress => _record.emailWithCase;
-  String get imageUri => _record.imageUri;
-}

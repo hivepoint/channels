@@ -15,13 +15,30 @@ class ContactsService extends Service {
     _contactAddedSource.close();
   }
   
+  Stream<Contact> contacts() {
+    StreamController<Contact> controller = new StreamController<Contact>();
+    _store.listAll().listen((ContactRecord record) {
+      Contact contact = new ContactImpl.fromDb(record);
+      return contact;      
+    }).onDone(() {
+      controller.close();
+    });
+    return controller.stream;
+  }
+
   Stream<Contact> getContactsById(Set<String> contactIds) {
-    return _store.listByIds(contactIds);
+    StreamController<Contact> controller = new StreamController<Contact>();
+    _store.listByIds(contactIds).listen((ContactRecord record) {
+      ContactImpl contact = new ContactImpl.fromDb(record);
+      controller.add(contact);
+    }).onDone(() {
+      controller.close();
+    });
+    return controller.stream;
   }
   
   Future<Contact> addContact(String emailAddress, String name, String imageUri) {
-    ContactRecord record = new ContactRecord.fromFields(generateUid(), emailAddress, name, new DateTime.now(), imageUri);
-    return _store.insert(record).then((_) {
+    return _store.add(emailAddress, name, imageUri).then((ContactRecord record) {
       Contact contact = new ContactImpl.fromDb(record);
      _contactAddedSource.add(contact);
      return contact;
@@ -37,3 +54,16 @@ class ContactsService extends Service {
   }
 }
 
+class ContactImpl extends Contact {
+  ContactRecord _record;
+
+  ContactImpl.fromDb(ContactRecord record) {
+    _record = record;
+  }
+
+  String get gid => _record.gid;
+  DateTime get created => _record.created;
+  String get name => _record.name;
+  String get emailAddress => _record.emailWithCase;
+  String get imageUri => _record.imageUri;
+}
