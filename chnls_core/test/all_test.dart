@@ -11,54 +11,14 @@ ContactsService contactsService = new ContactsService();
 
 main() {
   useHtmlConfiguration();
-  group('All tests', () {
-
-//    test ('Auth test', () {
-//      GoogleAuth auth = new GoogleAuth();
-//      var callback1 = expectAsync((String token) {
-//          print(token);
-//          expect(token.isEmpty, isFalse);
-//      });
-//       auth.authorize().then(callback1);
-//    });
-
-//    test('Message test:  add/check', () {
-//      MessageService msgs = new MessageService();
-//      msgs.clearAllMessages();
-//      msgs.addMessage("joe@test.com", "hello world 1");
-//      msgs.addMessage("joe@test.com", "hello world 2");
-//      msgs.addMessage("joe@test.com", "hello world 3");
-//      var callback = expectAsync((msgs) {
-//        print(msgs.toString());
-//        expect(msgs.length, 3);
-//      });
-//      msgs.getMessages().toList().then(callback);
-//      print("done!");
-//    });
-
-//    test('Group test:  add/check', () {
-//      var callback = expectAsync((List<Group> groups) {
-//        expect(groups.length, equals(2));
-//      });
-//      GroupsService sut = new GroupsService();
-//      var contacts = new List<Contact>();
-//      sut.deleteAll().then((_) {
-//        sut.addGroup("group1", contacts, "#fff").then((_) {
-//          sut.addGroup("group2", contacts, "#777").then((_) {
-//            sut.groups().toList().then(callback);
-//          });
-//        });
-//      });
-//    });
-
+  group('Start-from-empty tests', () {
     setUp(() {
       return cleanGroups().then((_) {
         return cleanContacts();
       });
     });
 
-    tearDown(() {
-    });
+    tearDown(() {});
 
     test('Group:  add/check', () {
       return groupsService.addGroup("group1", null, "#f00").then((Group group) {
@@ -84,6 +44,34 @@ main() {
               expect(group.tileColor, equals("#f00"));
             });
           });
+        });
+      });
+    });
+  });
+
+  group('Single group tests', () {
+    setUp(() {
+      return cleanGroups().then((_) {
+        return cleanContacts().then((_) {
+          Set<Contact> contacts = new Set<Contact>();
+          return contactsService
+              .addContact("joe@test.com", "Joe", null)
+              .then((Contact contact) {
+            contacts.add(contact);
+            return groupsService.addGroup("group1", contacts, "#0f0");
+          });
+        });
+      });
+    });
+
+    tearDown(() {});
+
+    test('Modify group', () {
+      return groupsService.groups().listen((Group group) {
+        DateTime previouslyUpdated = group.lastUpdated;
+        return group.setTileColor("#00f").then((Group updated) {
+          expect(updated.tileColor, equals("#00f"));
+          expect(updated.lastUpdated, greaterThan(previouslyUpdated));
         });
       });
     });
