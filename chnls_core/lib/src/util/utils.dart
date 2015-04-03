@@ -21,3 +21,10 @@ abstract class WithGuid {
     }
   }
 }
+
+
+class DuplicateException implements Exception {
+  final String message;
+  DuplicateException(this.message);
+  String toString() => message;
+}

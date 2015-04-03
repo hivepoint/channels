@@ -5,6 +5,7 @@ class ContactsService extends Service {
   factory ContactsService() => _singleton;
   StreamController<Contact> _contactAddedSource = new StreamController<Contact>();
   Stream<Contact> _contactAddedStream;
+  ContactsCollection _store = new ContactsCollection();
 
   ContactsService._internal() {
     _contactAddedStream = _contactAddedSource.stream.asBroadcastStream();
@@ -15,14 +16,20 @@ class ContactsService extends Service {
   }
   
   Stream<Contact> getContactsById(Set<String> contactIds) {
-    var contacts = new List<Contact>();
-    return new Stream<Contact>.fromIterable(contacts);  
+    return _store.listByIds(contactIds);
   }
   
-  Future<Contact> createContact(String emailAddress, String name) {
-    return new Future.sync(() => new SimpleContact(generateUid(), emailAddress, name)).then((contact) {
-      _contactAddedSource.add(contact);
+  Future<Contact> addContact(String emailAddress, String name, String imageUri) {
+    ContactRecord record = new ContactRecord.fromFields(generateUid(), emailAddress, name, new DateTime.now(), imageUri);
+    return _store.insert(record).then((_) {
+      Contact contact = new ContactImpl.fromDb(record);
+     _contactAddedSource.add(contact);
+     return contact;
     });
+  }
+  
+  Future deleteAll() {
+    return _store.removeAll();
   }
   
   Stream<Contact> onNewContact() {

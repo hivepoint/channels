@@ -10,21 +10,22 @@ import 'package:googleapis_auth/auth_browser.dart';
 import 'package:uuid/uuid.dart';
 
 part 'src/chnls_core_msgs.dart';
-part 'src/chnls_core_service.dart';
+part 'src/lifecycle.dart';
 
-part 'src/groups/chnls_core_groups_service.dart';
-part 'src/groups/chnls_core_group.dart';
+part 'src/groups/groups_service.dart';
+part 'src/groups/group.dart';
 
-part 'src/contacts/chnls_core_contact_service.dart';
-part 'src/contacts/chnls_core_contact.dart';
+part 'src/contacts/contact_service.dart';
+part 'src/contacts/contact.dart';
 
-part 'src/conversations/chnls_core_conversation.dart';
-part 'src/conversations/chnls_core_message.dart';
+part 'src/conversations/conversation.dart';
+part 'src/conversations/message.dart';
 
-part 'src/db/chnls_core_database_service.dart';
-part 'src/db/chnls_core_database_collection.dart';
-part 'src/db/chnls_core_database_groups.dart';
+part 'src/db/service.dart';
+part 'src/db/collection.dart';
+part 'src/db/groups.dart';
+part 'src/db/contacts.dart';
 
 part 'src/google/chnls_core_google.dart';
 
-part 'src/util/chnls_core_utils.dart';
+part 'src/util/utils.dart';
