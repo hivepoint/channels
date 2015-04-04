@@ -15,7 +15,7 @@ class ConversationService extends Service {
     _conversationAddedSource.close();
   }
   
-  Stream<Conversation> conversationsByGroup(String groupId) {
+  Stream<Conversation> _conversationsByGroup(String groupId) {
     StreamController<Conversation> controller = new StreamController<Conversation>();
     _store.listByGroup(groupId).listen((ConversationRecord record) {
       Conversation conversation = new ConversationImpl.fromDb(record);
@@ -26,7 +26,7 @@ class ConversationService extends Service {
     return controller.stream;
   }
 
-  Future<Conversation> addConversation(String groupId, String subject) {
+  Future<Conversation> _addConversation(String groupId, String subject) {
     return _store.add(groupId, subject).then((ConversationRecord record) {
       Conversation conversation = new ConversationImpl.fromDb(record);
      _conversationAddedSource.add(conversation);
@@ -42,7 +42,7 @@ class ConversationService extends Service {
     return _conversationAddedStream;
   }
   
-  Future<Conversation> getById(String id) {
+  Future<Conversation> _getById(String id) {
     return _store.getById(id).then((record) {
       var group = new ConversationImpl.fromDb(record);
       return group;
@@ -63,6 +63,7 @@ class ConversationImpl extends Conversation {
   DateTime get lastMessage => _record.lastMessage;
   String get subject => _record.subject;
 
-  Future<Group> get group => new GroupService().getById(_record.groupId);
+  Future<Group> get group => new GroupService()._getById(_record.groupId);
     
+  Stream<Message> get messages => new MessageService()._getByConversationId(_record.gid);
 }

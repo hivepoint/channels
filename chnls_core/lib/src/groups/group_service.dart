@@ -18,7 +18,7 @@ class GroupService extends Service {
   Stream<Group> groups() {
     StreamController<Group> controller = new StreamController<Group>();
     _store.listAll().listen((GroupRecord record) {
-      Group group = new GroupImpl.fromDb(record);
+      Group group = new GroupImpl._fromDb(record);
       return group;
     }).onDone(() {
       controller.close();
@@ -35,7 +35,7 @@ class GroupService extends Service {
       });
     }
     return _store.add(name, contactIds, tileColor).then((record) {
-      Group group = new GroupImpl.fromDb(record);
+      Group group = new GroupImpl._fromDb(record);
       _groupAddedSource.add(group);
       return group;
     });
@@ -49,9 +49,9 @@ class GroupService extends Service {
     return _store.removeAll();
   }
 
-  Future<Group> getById(String groupId) {
+  Future<Group> _getById(String groupId) {
     return _store.getById(groupId).then((record) {
-      var group = new GroupImpl.fromDb(record);
+      var group = new GroupImpl._fromDb(record);
       return group;
     });
   }
@@ -61,7 +61,7 @@ class GroupImpl extends Group {
   GroupRecord _record;
   var contactService = new ContactService();
 
-  GroupImpl.fromDb(GroupRecord record) {
+  GroupImpl._fromDb(GroupRecord record) {
     _record = record;
     if (_record.contactIds == null) {
       _record.contactIds = new Set<String>();
@@ -84,11 +84,11 @@ class GroupImpl extends Group {
   }
 
   Stream<Contact> get people =>
-      new ContactService().getContactsById(_record.contactIds);
+      new ContactService()._getContactsById(_record.contactIds);
   
   Stream<Conversation> get conversations =>
-      new ConversationService().conversationsByGroup(_record.gid);
+      new ConversationService()._conversationsByGroup(_record.gid);
 
   Future<Conversation> createConversation(String subject) =>
-      new ConversationService().addConversation(_record.gid, subject);
+      new ConversationService()._addConversation(_record.gid, subject);
 }

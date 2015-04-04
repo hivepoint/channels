@@ -8,10 +8,10 @@ abstract class Conversation {
   
   Future<Group> get group;
 
-  //  Stream<Message> get messages;
+  Stream<Message> get messages;
+  
+//  Future<DraftMessage> createDraftMessage();
 //  Stream<DraftMessage> get drafts;
 //  
 //  Stream<Message> onNewMessage();
-//  
-//  Future<DraftMessage> createDraftMessage();
 }

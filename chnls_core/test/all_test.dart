@@ -96,6 +96,7 @@ main() {
 Future cleanGroups() {
   return groupsService.deleteAll();
 }
+
 Future cleanContacts() {
   return contactsService.deleteAll();
 }

@@ -26,7 +26,7 @@ class ContactService extends Service {
     return controller.stream;
   }
 
-  Stream<Contact> getContactsById(Set<String> contactIds) {
+  Stream<Contact> _getContactsById(Set<String> contactIds) {
     StreamController<Contact> controller = new StreamController<Contact>();
     _store.listByIds(contactIds).listen((ContactRecord record) {
       ContactImpl contact = new ContactImpl.fromDb(record);
