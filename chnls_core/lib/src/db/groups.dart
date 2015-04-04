@@ -4,7 +4,7 @@ class GroupsCollection extends DatabaseCollection {
   static final GroupsCollection _singleton = new GroupsCollection._internal();
   factory GroupsCollection() => _singleton;
   static const String GROUPS_STORE = "groups";
-  ContactsService contactsService = new ContactsService();
+  ContactService contactService = new ContactService();
 
   GroupsCollection._internal() : super(GROUPS_STORE);
 

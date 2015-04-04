@@ -1,13 +1,13 @@
 part of chnls_core;
 
-class ConversationsService extends Service {
-  static final ConversationsService _singleton = new ConversationsService._internal();
-  factory ConversationsService() => _singleton;
+class ConversationService extends Service {
+  static final ConversationService _singleton = new ConversationService._internal();
+  factory ConversationService() => _singleton;
   StreamController<Conversation> _conversationAddedSource = new StreamController<Conversation>();
   Stream<Conversation> _conversationAddedStream;
   ConversationsCollection _store = new ConversationsCollection();
 
-  ConversationsService._internal() {
+  ConversationService._internal() {
     _conversationAddedStream = _conversationAddedSource.stream.asBroadcastStream();
   }
   
@@ -41,6 +41,14 @@ class ConversationsService extends Service {
   Stream<Conversation> onNewConversation() {
     return _conversationAddedStream;
   }
+  
+  Future<Conversation> getById(String id) {
+    return _store.getById(id).then((record) {
+      var group = new ConversationImpl.fromDb(record);
+      return group;
+    });
+  }
+
 }
 
 class ConversationImpl extends Conversation {
@@ -55,9 +63,6 @@ class ConversationImpl extends Conversation {
   DateTime get lastMessage => _record.lastMessage;
   String get subject => _record.subject;
 
-  Future<Group> get group {
-    GroupsService groupsService = new GroupsService();
-    return groupsService.getById(_record.groupId);
-  }
+  Future<Group> get group => new GroupService().getById(_record.groupId);
     
 }

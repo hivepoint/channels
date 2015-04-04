@@ -4,8 +4,8 @@ class ConversationsCollection extends DatabaseCollection {
   static final ConversationsCollection _singleton = new ConversationsCollection._internal();
   factory ConversationsCollection() => _singleton;
   static const String CONVERSATIONS_STORE = "conversations";
-  static const String INDEX_GROUP_NAME = "group";
-  ContactsService contactsService = new ContactsService();
+  static const String INDEX_GROUP = "group";
+  ContactService contactService = new ContactService();
 
   ConversationsCollection._internal() : super(CONVERSATIONS_STORE);
 
@@ -16,14 +16,14 @@ class ConversationsCollection extends DatabaseCollection {
     idb.ObjectStore store =
         db.createObjectStore(CONVERSATIONS_STORE, autoIncrement: true);
     store.createIndex(INDEX_GID, INDEX_GID, unique: true);
-    store.createIndex(INDEX_GROUP_NAME, ['groupId','lastMessage'], unique: false);
+    store.createIndex(INDEX_GROUP, ['groupId','lastMessage'], unique: false);
   }
 
   Stream<ConversationRecord> listByGroup(String groupId) {
     StreamController<ConversationRecord> controller = new StreamController<ConversationRecord>();
     _transaction().then((idb.ObjectStore store) {
       idb.KeyRange keyRange = new idb.KeyRange.bound([groupId,  new DateTime.fromMillisecondsSinceEpoch(0)], [groupId, new DateTime.now()]);
-      store.index(INDEX_GROUP_NAME).openCursor(range: keyRange, direction: 'prev').listen((cursor) {
+      store.index(INDEX_GROUP).openCursor(range: keyRange, direction: 'prev', autoAdvance: true).listen((cursor) {
         ConversationRecord record = new ConversationRecord();
         record.fromDb(cursor.value);
         controller.add(record);
@@ -44,6 +44,18 @@ class ConversationsCollection extends DatabaseCollection {
       });
     });
   }
+  
+  Future<ConversationRecord> getById(String id) {
+    return _transaction().then((store) {
+      return store.index(INDEX_GID).get(id).then((idb.CursorWithValue cursor) {
+        ConversationRecord record = new ConversationRecord();
+        record.fromDb(cursor.value);
+        return record;
+      });
+    });
+  }
+ 
+
 }
 
 @export

@@ -12,7 +12,7 @@ import 'package:uuid/uuid.dart';
 part 'src/chnls_core_msgs.dart';
 part 'src/lifecycle.dart';
 
-part 'src/groups/groups_service.dart';
+part 'src/groups/group_service.dart';
 part 'src/groups/group.dart';
 
 part 'src/contacts/contact_service.dart';
@@ -20,13 +20,21 @@ part 'src/contacts/contact.dart';
 
 part 'src/conversations/conversation_service.dart';
 part 'src/conversations/conversation.dart';
-part 'src/conversations/message.dart';
+
+
+part 'src/messages/message_service.dart';
+part 'src/messages/message.dart';
+
+part 'src/message_drafts/message_draft_service.dart';
+part 'src/message_drafts/message_draft.dart';
 
 part 'src/db/database_service.dart';
 part 'src/db/collection.dart';
 part 'src/db/groups.dart';
 part 'src/db/contacts.dart';
 part 'src/db/conversations.dart';
+part 'src/db/messages.dart';
+part 'src/db/message_drafts.dart';
 
 part 'src/google/chnls_core_google.dart';
 

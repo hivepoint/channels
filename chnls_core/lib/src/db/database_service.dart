@@ -18,6 +18,7 @@ class DatabaseService extends Service {
     GroupsCollection._initialize(db);
     ContactsCollection._initialize(db);
     ConversationsCollection._initialize(db);
+    MessagesCollection._initialize(db);
   }
   
   void _onStop() {

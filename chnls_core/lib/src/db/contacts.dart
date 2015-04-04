@@ -56,8 +56,41 @@ class ContactsCollection extends DatabaseCollection {
     return controller.stream;
   }
   
+  Future<ContactRecord> getByEmail(String emailAddress) {
+    return _transaction().then((store) {
+      return store.index(INDEX_EMAIL).get(emailAddress.toLowerCase()).then((idb.CursorWithValue cursor) {
+        GroupRecord record = new GroupRecord();
+        record.fromDb(cursor.value);
+        return record;
+      });
+    });
+  }
+  
+  Stream<ContactRecord> listByEmailAddresses(Set<String> emailAddresses) {
+    StreamController<ContactRecord> controller = new StreamController<ContactRecord>();
+    if (emailAddresses.isEmpty) {
+      controller.close();
+    } else {
+      int count = 0;
+      _transaction().then((store) {
+        emailAddresses.forEach((emailAddress) {
+          store.index(INDEX_EMAIL).get(emailAddress.toLowerCase()).then((Object value) {
+            ContactRecord record = new ContactRecord();
+            record.fromDb(value);
+            controller.add(record);
+            count++;
+            if (count == emailAddresses.length) {
+              controller.close();
+            }
+          });
+        });
+      });
+    }
+    return controller.stream;    
+  }
+  
   Future<ContactRecord> add(String emailAddress, String name, String imageUri) {
-    ContactRecord record = new ContactRecord.fromFields(generateUid(), emailAddress, name, new DateTime.now(), imageUri);
+    ContactRecord record = new ContactRecord.fromFields(generateUid(), emailAddress.toLowerCase(), name, new DateTime.now(), imageUri);
     return _transaction(rw:true).then((store) {
       return store.add(record.toDb()).then((_) {
         return record;

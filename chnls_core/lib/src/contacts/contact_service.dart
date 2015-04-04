@@ -1,13 +1,13 @@
 part of chnls_core;
 
-class ContactsService extends Service {
-  static final ContactsService _singleton = new ContactsService._internal();
-  factory ContactsService() => _singleton;
+class ContactService extends Service {
+  static final ContactService _singleton = new ContactService._internal();
+  factory ContactService() => _singleton;
   StreamController<Contact> _contactAddedSource = new StreamController<Contact>();
   Stream<Contact> _contactAddedStream;
   ContactsCollection _store = new ContactsCollection();
 
-  ContactsService._internal() {
+  ContactService._internal() {
     _contactAddedStream = _contactAddedSource.stream.asBroadcastStream();
   }
   
@@ -51,6 +51,20 @@ class ContactsService extends Service {
   
   Stream<Contact> onNewContact() {
     return _contactAddedStream;
+  }
+  
+  Future<Contact> getContactByEmail(String emailAddress) {
+    return new ContactsCollection().getByEmail(emailAddress).then((ContactRecord record) {
+      return new ContactImpl.fromDb(record);
+    });
+  }
+
+  Stream<Contact> getContactsByEmail(Iterable<String> emailAddresses) {
+    var controller = new StreamController<Contact>();
+    new ContactsCollection().listByEmailAddresses(emailAddresses)
+    .listen((ContactRecord record) => controller.addError(new ContactImpl.fromDb(record)))
+    .onDone(() { controller.close();});
+    return controller.stream;
   }
 }
 

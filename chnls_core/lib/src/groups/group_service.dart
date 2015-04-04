@@ -1,13 +1,13 @@
 part of chnls_core;
 
-class GroupsService extends Service {
-  static final GroupsService _singleton = new GroupsService._internal();
-  factory GroupsService() => _singleton;
+class GroupService extends Service {
+  static final GroupService _singleton = new GroupService._internal();
+  factory GroupService() => _singleton;
   StreamController<Group> _groupAddedSource = new StreamController<Group>();
   Stream<Group> _groupAddedStream;
   GroupsCollection _store = new GroupsCollection();
 
-  GroupsService._internal() {
+  GroupService._internal() {
     _groupAddedStream = _groupAddedSource.stream.asBroadcastStream();
   }
 
@@ -19,14 +19,15 @@ class GroupsService extends Service {
     StreamController<Group> controller = new StreamController<Group>();
     _store.listAll().listen((GroupRecord record) {
       Group group = new GroupImpl.fromDb(record);
-      return group;      
+      return group;
     }).onDone(() {
       controller.close();
     });
     return controller.stream;
   }
 
-  Future<Group> addGroup(String name, Iterable<Contact> people, String tileColor) {
+  Future<Group> addGroup(
+      String name, Iterable<Contact> people, String tileColor) {
     List<String> contactIds = new List<String>();
     if (people != null) {
       people.forEach((Contact contact) {
@@ -43,11 +44,11 @@ class GroupsService extends Service {
   Stream<Group> onNewGroup() {
     return _groupAddedStream;
   }
-  
+
   Future deleteAll() {
     return _store.removeAll();
   }
-  
+
   Future<Group> getById(String groupId) {
     return _store.getById(groupId).then((record) {
       var group = new GroupImpl.fromDb(record);
@@ -58,15 +59,15 @@ class GroupsService extends Service {
 
 class GroupImpl extends Group {
   GroupRecord _record;
-  ContactsService contactsService = new ContactsService();
-  
+  var contactService = new ContactService();
+
   GroupImpl.fromDb(GroupRecord record) {
-    _record = record; 
+    _record = record;
     if (_record.contactIds == null) {
       _record.contactIds = new Set<String>();
     }
   }
-  
+
   String get gid => _record.gid;
   DateTime get created => _record.created;
   DateTime get lastUpdated => _record.lastUpdated;
@@ -75,22 +76,19 @@ class GroupImpl extends Group {
 
   Future setTileColor(String value) {
     GroupsCollection collection = new GroupsCollection();
-    return collection.setTileColor(_record, value).then((GroupRecord revisedRecord) {
+    return collection
+        .setTileColor(_record, value)
+        .then((GroupRecord revisedRecord) {
       _record = revisedRecord;
     });
   }
+
+  Stream<Contact> get people =>
+      new ContactService().getContactsById(_record.contactIds);
   
-  Stream<Contact> get people {
-    return contactsService.getContactsById(_record.contactIds);
-  }
-  Stream<Conversation> get conversations {
-    var conversationsService = new ConversationsService();
-    return conversationsService.conversationsByGroup(_record.gid);
-  }
+  Stream<Conversation> get conversations =>
+      new ConversationService().conversationsByGroup(_record.gid);
 
-  Future<Conversation> createConversation(String subject) {
-    var conversationsService = new ConversationsService();
-    return conversationsService.addConversation(_record.gid, subject);
-  }
-
+  Future<Conversation> createConversation(String subject) =>
+      new ConversationService().addConversation(_record.gid, subject);
 }
