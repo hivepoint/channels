@@ -58,10 +58,10 @@ main() {
           .then((_) => cleanConversations())
           .then((_) => cleanMessages())
           .then((_) => cleanMessageDrafts());
-      });
     });
+  });
 
-    tearDown(() {});
+  tearDown(() {});
 
 //    test('Modify group', () {
 //      return groupsService.groups().listen((Group group) {
@@ -89,16 +89,17 @@ main() {
 //      });
 //    });
 
-    test('Message lifecycle', () {
-      var verifyMessage = expectAsync((Message message) {
-        expect(message.htmlContent, equals("hello world!"));
-      });
-      groupService.addGroup("group1", new List<Contact>(), "#f00")
-              .then((Group group) => group.createConversation("subject1"))
-            .then((Conversation conversation) => conversation.createDraftMessage())
-            .then((MessageDraft draft) => draft.updateContent("hello world!"))
-            .then((MessageDraft draft) => draft.send())
-            .then((Message message) => verifyMessage(message));
+  test('Message lifecycle', () {
+    var verifyMessage = expectAsync((Message message) {
+      expect(message.htmlContent, equals("hello world!"));
+    });
+    groupService
+        .addGroup("group1", new List<Contact>(), "#f00")
+        .then((Group group) => group.createConversation("subject1"))
+        .then((Conversation conversation) => conversation.createDraftMessage())
+        .then((MessageDraft draft) => draft.updateContent("hello world!"))
+        .then((MessageDraft draft) => draft.send())
+        .then((Message message) => verifyMessage(message));
   });
 }
 
