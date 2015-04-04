@@ -7,9 +7,8 @@ abstract class Message {
   Future<Contact> get from;
   Stream<Contact> get to;
   Stream<Contact> get cc;
-  String get preamble; 
   String get subject;
-  Future<String> get htmlContent;
+  String get htmlContent;
   
   Future<Conversation> get conversation;
   

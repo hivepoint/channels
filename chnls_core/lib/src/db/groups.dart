@@ -31,9 +31,9 @@ class GroupsCollection extends DatabaseCollection {
     return controller.stream;
   }
 
-  Future<GroupRecord> setTileColor(GroupRecord record, String color) {
+  Future<GroupRecord> setTileColor(String id, String color) {
     GroupRecord record = new GroupRecord();
-    return fetchAndUpdate(record.gid, (Object recordValue) {
+    return fetchAndUpdate(id, (Object recordValue) {
       record.fromDb(recordValue);
       record.tileColor = color;
       record.lastUpdated = new DateTime.now();
@@ -69,6 +69,7 @@ class GroupsCollection extends DatabaseCollection {
 
 @export
 class GroupRecord extends DatabaseRecord with WithGuid {
+  @export String gid;
   @export String name;
   @export DateTime created;
   @export DateTime lastUpdated;
@@ -76,8 +77,6 @@ class GroupRecord extends DatabaseRecord with WithGuid {
   @export String tileColor;
 
   GroupRecord();
-  GroupRecord.fromFields(String gid, String this.name, DateTime this.created, DateTime this.lastUpdated,
-      String this.tileColor) {
-    this.gid = gid;
-  }
+  GroupRecord.fromFields(String this.gid, String this.name, DateTime this.created, DateTime this.lastUpdated,
+      String this.tileColor);
 }

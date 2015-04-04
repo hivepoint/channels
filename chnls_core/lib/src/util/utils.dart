@@ -5,10 +5,9 @@ String generateUid() {
   return uuid.v4();
 }
 
-@export
 abstract class WithGuid {
-  @export String gid;
-
+  String get gid;
+  
   int get hashCode {
     return gid.hashCode;
   }

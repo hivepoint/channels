@@ -19,6 +19,7 @@ class GroupService extends Service {
     StreamController<Group> controller = new StreamController<Group>();
     _store.listAll().listen((GroupRecord record) {
       Group group = new GroupImpl._fromDb(record);
+      controller.add(group);
       return group;
     }).onDone(() {
       controller.close();
@@ -71,21 +72,21 @@ class GroupImpl extends Group {
   String get gid => _record.gid;
   DateTime get created => _record.created;
   DateTime get lastUpdated => _record.lastUpdated;
-  String get name => _record.name;
+  String get name  => _record.name;
   String get tileColor => _record.tileColor;
 
-  Future setTileColor(String value) {
+  Future<Group> setTileColor(String value) {
     GroupsCollection collection = new GroupsCollection();
     return collection
-        .setTileColor(_record, value)
+        .setTileColor(_record.gid, value)
         .then((GroupRecord revisedRecord) {
-      _record = revisedRecord;
+      return new GroupImpl._fromDb(revisedRecord);
     });
   }
 
   Stream<Contact> get people =>
       new ContactService()._getContactsById(_record.contactIds);
-  
+
   Stream<Conversation> get conversations =>
       new ConversationService()._conversationsByGroup(_record.gid);
 

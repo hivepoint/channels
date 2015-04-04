@@ -66,4 +66,8 @@ class ConversationImpl extends Conversation {
   Future<Group> get group => new GroupService()._getById(_record.groupId);
     
   Stream<Message> get messages => new MessageService()._getByConversationId(_record.gid);
+  
+  Stream<MessageDraft> get drafts => new MessageService()._getDraftsByConversationId(_record.gid);
+  
+  Future<MessageDraft> createDraftMessage() => new MessageService()._createMessageDraft(_record.groupId, _record.gid);
 }

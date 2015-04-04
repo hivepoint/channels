@@ -101,6 +101,7 @@ class ContactsCollection extends DatabaseCollection {
 
 @export
 class ContactRecord extends DatabaseRecord with WithGuid {
+  @export String gid;
   @export String email;
   @export String emailWithCase;
   @export String name;
@@ -109,9 +110,8 @@ class ContactRecord extends DatabaseRecord with WithGuid {
 
   ContactRecord();
 
-  ContactRecord.fromFields(String gid, String this.emailWithCase,
+  ContactRecord.fromFields(String this.gid, String this.emailWithCase,
       String this.name, DateTime this.created, String this.imageUri) {
-    this.gid = gid;
     this.email = emailWithCase.toLowerCase();
   }
 }

@@ -52,6 +52,6 @@ abstract class DatabaseRecord extends Object with Exportable {
   }
 
   Map toDb() {
-    return this.toMap();
+    return toMap();
   }
 }

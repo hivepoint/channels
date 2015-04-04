@@ -59,13 +59,14 @@ class ConversationsCollection extends DatabaseCollection {
 
 @export
 class ConversationRecord extends DatabaseRecord with WithGuid {
+  @export String gid;
   @export DateTime created;
   @export DateTime lastMessage;
   @export String groupId;
   @export String subject;
 
   ConversationRecord();
-  ConversationRecord.fromFields(String gid, DateTime this.created, DateTime this.lastMessage,
+  ConversationRecord.fromFields(String this.gid, DateTime this.created, DateTime this.lastMessage,
       String this.groupId, String this.subject) {
     this.gid = gid;
   }

@@ -10,8 +10,8 @@ abstract class Conversation {
 
   Stream<Message> get messages;
   
-//  Future<DraftMessage> createDraftMessage();
-//  Stream<DraftMessage> get drafts;
+  Future<MessageDraft> createDraftMessage();
+  Stream<MessageDraft> get drafts;
 //  
 //  Stream<Message> onNewMessage();
 }

@@ -11,5 +11,5 @@ abstract class MessageDraft {
   Future<Message> send();
   Future cancel();
   
-  Future updateContent(String newHtmlContent);
+  Future<MessageDraft> updateContent(String newHtmlContent);
 }

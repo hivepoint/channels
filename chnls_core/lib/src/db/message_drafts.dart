@@ -41,10 +41,23 @@ class MessageDraftsCollection extends DatabaseCollection {
       });
     });
   }
+  
+  Future<MessageDraftRecord> updateContents(String id, String newContents) {
+    var record = new MessageDraftRecord();
+    return fetchAndUpdate(id, (Object recordValue) {
+      record.fromDb(recordValue);
+      record.htmlContent = newContents;
+      record.lastUpdated = new DateTime.now();
+      return record.toDb();
+    }).then((_) {
+       return record;   
+    });
+  }
 }
 
 @export
 class MessageDraftRecord extends DatabaseRecord with WithGuid {
+  @export String gid;
   @export String groupId;
   @export String conversationId;
   @export DateTime created;
@@ -53,8 +66,6 @@ class MessageDraftRecord extends DatabaseRecord with WithGuid {
 
   MessageDraftRecord();
 
-  MessageDraftRecord.fromFields(String gid, String this.groupId, String this.conversationId, DateTime this.created, DateTime this.lastUpdated, String this.htmlContent) {
-    this.gid = gid;
-  }
+  MessageDraftRecord.fromFields(String this.gid, String this.groupId, String this.conversationId, DateTime this.created, DateTime this.lastUpdated, String this.htmlContent);
 }
 
