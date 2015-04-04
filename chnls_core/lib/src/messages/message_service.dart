@@ -33,6 +33,10 @@ class MessagesService extends Service {
   Stream<Message> onNewMessage() {
     return _messageAddedStream;
   }
+  
+  Future<MessageDraft> createMessageDraft(Conversation conversation) {
+    throw new UnimplementedError();    
+  }
 }
 
 class MessageImpl extends Message {
@@ -65,4 +69,33 @@ class MessageImpl extends Message {
   Future<Conversation> get conversation => new ConversationService().getById(_record.conversationId);
   
   Future<String> get htmlContent => new Future<String>(() { return _record.htmlContent;});
+}
+
+class MessageDraftImpl extends MessageDraft {
+  MessageDraftRecord _record;
+
+  MessageDraftImpl.fromDb(MessageDraftRecord record) {
+    _record = record;
+  }
+
+  String get gid => _record.gid;
+  DateTime get created => _record.created;
+  DateTime get lastUpdated => _record.lastUpdated;
+  String get htmlContent => _record.htmlContent;
+
+  Future<Group> get group => new GroupService().getById(_record.groupId);
+    
+  Future<Conversation> get conversation => new ConversationService().getById(_record.conversationId);
+
+  Future<Message> send() {
+    throw new UnimplementedError();
+  }
+  
+  Future cancel() {
+    throw new UnimplementedError();
+  }
+  
+  Future updateContent(String htmlContent) {
+    throw new UnimplementedError();
+  }
 }

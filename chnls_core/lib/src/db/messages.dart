@@ -16,7 +16,7 @@ class MessagesCollection extends DatabaseCollection {
     idb.ObjectStore store =
         db.createObjectStore(MESSAGES_STORE, autoIncrement: true);
     store.createIndex(INDEX_GID, INDEX_GID, unique: true);
-    store.createIndex(INDEX_CONVERSATION, ['messageId','sent'], unique: false);
+    store.createIndex(INDEX_CONVERSATION, ['conversationId','sent'], unique: false);
   }
 
   Stream<MessageRecord> listByConversation(String conversationId) {

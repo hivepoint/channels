@@ -24,9 +24,7 @@ part 'src/conversations/conversation.dart';
 
 part 'src/messages/message_service.dart';
 part 'src/messages/message.dart';
-
-part 'src/message_drafts/message_draft_service.dart';
-part 'src/message_drafts/message_draft.dart';
+part 'src/messages/message_draft.dart';
 
 part 'src/db/database_service.dart';
 part 'src/db/collection.dart';
