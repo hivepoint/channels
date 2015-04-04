@@ -14,8 +14,7 @@ class MessagesCollection extends DatabaseCollection {
       db.deleteObjectStore(MESSAGES_STORE);
     }
     idb.ObjectStore store =
-        db.createObjectStore(MESSAGES_STORE, autoIncrement: true);
-    store.createIndex(INDEX_GID, INDEX_GID, unique: true);
+        db.createObjectStore(MESSAGES_STORE, keyPath: 'gid');
     store.createIndex(INDEX_CONVERSATION, ['conversationId','sent'], unique: false);
   }
 

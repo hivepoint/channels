@@ -10,7 +10,7 @@ class DatabaseService extends Service {
   }
   
   Future<idb.Database> open() {
-    return _idb.open("chnls", version: 5, onUpgradeNeeded: _initialize);
+    return _idb.open("chnls", version: 8, onUpgradeNeeded: _initialize);
   }
   
   void _initialize(idb.VersionChangeEvent e) {

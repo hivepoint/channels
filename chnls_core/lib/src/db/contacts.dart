@@ -14,8 +14,7 @@ class ContactsCollection extends DatabaseCollection {
       db.deleteObjectStore(CONTACTS_STORE);
     }
     idb.ObjectStore store =
-        db.createObjectStore(CONTACTS_STORE, autoIncrement: true);
-    store.createIndex(INDEX_GID, INDEX_GID, unique: true);
+        db.createObjectStore(CONTACTS_STORE, keyPath: 'gid');
     store.createIndex(INDEX_EMAIL, INDEX_EMAIL, unique: true);
   }
 
@@ -41,7 +40,7 @@ class ContactsCollection extends DatabaseCollection {
       int count = 0;
       _transaction().then((store) {
         contactIds.forEach((contactId) {
-          store.index(INDEX_GID).get(contactId).then((Object value) {
+          store.getObject(contactId).then((Object value) {
             ContactRecord record = new ContactRecord();
             record.fromDb(value);
             controller.add(record);

@@ -14,8 +14,7 @@ class ConversationsCollection extends DatabaseCollection {
       db.deleteObjectStore(CONVERSATIONS_STORE);
     }
     idb.ObjectStore store =
-        db.createObjectStore(CONVERSATIONS_STORE, autoIncrement: true);
-    store.createIndex(INDEX_GID, INDEX_GID, unique: true);
+        db.createObjectStore(CONVERSATIONS_STORE, keyPath: 'gid');
     store.createIndex(INDEX_GROUP, ['groupId','lastMessage'], unique: false);
   }
 

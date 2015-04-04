@@ -4,6 +4,7 @@ class GroupsCollection extends DatabaseCollection {
   static final GroupsCollection _singleton = new GroupsCollection._internal();
   factory GroupsCollection() => _singleton;
   static const String GROUPS_STORE = "groups";
+  static const String INDEX_LAST_UPDATED = "last_updated";
   ContactService contactService = new ContactService();
 
   GroupsCollection._internal() : super(GROUPS_STORE);
@@ -12,15 +13,14 @@ class GroupsCollection extends DatabaseCollection {
     if (db.objectStoreNames.contains(GROUPS_STORE)) {
       db.deleteObjectStore(GROUPS_STORE);
     }
-    idb.ObjectStore store =
-        db.createObjectStore(GROUPS_STORE, autoIncrement: true);
-    store.createIndex(INDEX_GID, INDEX_GID, unique: true);
+    var store = db.createObjectStore(GROUPS_STORE,  keyPath: 'gid');
+    store.createIndex(INDEX_LAST_UPDATED, 'lastUpdated', unique: false);
   }
 
   Stream<GroupRecord> listAll() {
     StreamController<GroupRecord> controller = new StreamController<GroupRecord>();
     _transaction().then((store) {
-      store.openCursor(autoAdvance: true).listen((idb.CursorWithValue value) {
+      store.index(INDEX_LAST_UPDATED).openCursor(autoAdvance: true).listen((idb.CursorWithValue value) {
         GroupRecord record = new GroupRecord();
         record.fromDb(value.value);
         controller.add(record);

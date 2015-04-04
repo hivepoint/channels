@@ -23,15 +23,21 @@ abstract class DatabaseCollection {
     });
   }
 
+  Future removeById(String gid) {
+    return _transaction(rw: true).then((store) {
+      return store.delete(gid);
+    });
+  }
+
   Future removeAll() {
     return _transaction(rw: true).then((store) {
       store.clear();
     });
   }
-  
+
   Future fetchAndUpdate(String id, DatabaseRecordUpdater updater) {
     return _transaction(rw: true).then((idb.ObjectStore store) {
-      return store.index(INDEX_GID).get(id).then((value) {
+      return store.getObject(id).then((value) {
         return store.put(updater(value));
       });
     });
@@ -48,5 +54,4 @@ abstract class DatabaseRecord extends Object with Exportable {
   Map toDb() {
     return this.toMap();
   }
-  
 }

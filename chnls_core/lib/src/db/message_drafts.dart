@@ -14,8 +14,7 @@ class MessageDraftsCollection extends DatabaseCollection {
       db.deleteObjectStore(MESSAGE_DRAFTS_STORE);
     }
     idb.ObjectStore store =
-        db.createObjectStore(MESSAGE_DRAFTS_STORE, autoIncrement: true);
-    store.createIndex(INDEX_GID, INDEX_GID, unique: true);
+        db.createObjectStore(MESSAGE_DRAFTS_STORE, keyPath: 'gid');
     store.createIndex(INDEX_CONVERSATION, ['conversationId','lastUpdated'], unique: false);
   }
 
@@ -40,12 +39,6 @@ class MessageDraftsCollection extends DatabaseCollection {
       return store.add(record.toDb()).then((_) {
         return record;
       });
-    });
-  }
-
-  Future deleteById(String gid) {
-    return _transaction(rw:true).then((store) {
-      throw new UnimplementedError();
     });
   }
 }
