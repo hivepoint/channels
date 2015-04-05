@@ -10,7 +10,7 @@ class DatabaseService extends Service {
   }
   
   Future<idb.Database> open() {
-    return _idb.open("braid", version: 1, onUpgradeNeeded: _initialize);
+    return _idb.open("braid", version: 2, onUpgradeNeeded: _initialize);
   }
   
   void _initialize(idb.VersionChangeEvent e) {
@@ -20,6 +20,7 @@ class DatabaseService extends Service {
     ConversationsCollection._initialize(db);
     MessagesCollection._initialize(db);
     MessageDraftsCollection._initialize(db);
+    LinkedAccountsCollection._initialize(db);
   }
   
   void _onStop() {

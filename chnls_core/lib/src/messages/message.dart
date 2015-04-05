@@ -9,6 +9,9 @@ abstract class Message {
   Stream<Contact> get cc;
   String get subject;
   String get htmlContent;
+  String get messageIdHeader;
+  Future<LinkedAccount> get linkedAccount;
+  String get linkedAccountMessageId;
   
   Future<Conversation> get conversation;
   

@@ -67,11 +67,13 @@ class MessageService extends Service {
     var now = new DateTime.now();
     return _store
         .add(record.gid, record.conversationId, now, now, null, null, null,
-            null, record.htmlContent)
+            null, record.htmlContent, "<" + record.gid + "@braid.cc")
         .then((MessageRecord record) {
       return new MessageImpl.fromDb(record);
     });
   }
+  
+  
 }
 
 class MessageImpl extends Message {
@@ -104,6 +106,12 @@ class MessageImpl extends Message {
       new ConversationService()._getById(_record.conversationId);
 
   String get htmlContent => _record.htmlContent;
+  
+  String get messageIdHeader => _record.messageIdHeader;
+  
+  String get linkedAccountMessageId => _record.linkedAccountMessageId;
+  
+  Future<LinkedAccount> get linkedAccount => new AccountService()._linkedAccountById(_record.linkedAccountId);
 }
 
 class MessageDraftImpl extends MessageDraft {

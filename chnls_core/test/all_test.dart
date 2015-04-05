@@ -5,6 +5,8 @@ import 'package:chnls_core/chnls_core.dart';
 import 'package:unittest/html_config.dart';
 import 'dart:core';
 import 'dart:async';
+import 'package:googleapis_auth/auth_browser.dart';
+import 'package:googleapis/gmail/v1.dart' as gmail;
 
 GroupService groupService = new GroupService();
 ContactService contactService = new ContactService();
@@ -13,7 +15,33 @@ MessageService messageService = new MessageService();
 
 main() {
   useHtmlConfiguration();
-//  group('Start-from-empty tests', () {
+//    group('Google', () {
+//      test('Google oauth', () {
+//        return new GoogleAuth().credentials.then((AccessCredentials creds) {
+//          print(creds.accessToken.data);
+//        });
+//      });
+//    });
+
+    group('Gmail', () {
+      test('profile', () {
+        return new GoogleAuth().authorizedClient().then((AutoRefreshingAuthClient client){
+          gmail.GmailApi api = new gmail.GmailApi(client);
+          var request = new gmail.Draft();
+          
+          api.users.drafts.create(request, "me")
+            .then((Draft draft) {
+            
+          });
+          api.users.getProfile("me")
+          .then((gmail.Profile profile) {
+            print(profile);
+          });
+        });
+      });
+    });
+
+    //  group('Start-from-empty tests', () {
 //    setUp(() {
 //      return cleanGroups().then((_) {
 //        return cleanContacts();
@@ -89,18 +117,18 @@ main() {
 //      });
 //    });
 
-  test('Message lifecycle', () {
-    var verifyMessage = expectAsync((Message message) {
-      expect(message.htmlContent, equals("hello world!"));
-    });
-    groupService
-        .addGroup("group1", new List<Contact>(), "#f00")
-        .then((Group group) => group.createConversation("subject1"))
-        .then((Conversation conversation) => conversation.createDraftMessage())
-        .then((MessageDraft draft) => draft.updateContent("hello world!"))
-        .then((MessageDraft draft) => draft.send())
-        .then((Message message) => verifyMessage(message));
-  });
+//  test('Message lifecycle', () {
+//    var verifyMessage = expectAsync((Message message) {
+//      expect(message.htmlContent, equals("hello world!"));
+//    });
+//    groupService
+//        .addGroup("group1", new List<Contact>(), "#f00")
+//        .then((Group group) => group.createConversation("subject1"))
+//        .then((Conversation conversation) => conversation.createDraftMessage())
+//        .then((MessageDraft draft) => draft.updateContent("hello world!"))
+//        .then((MessageDraft draft) => draft.send())
+//        .then((Message message) => verifyMessage(message));
+//  });
 }
 
 Future cleanGroups() {

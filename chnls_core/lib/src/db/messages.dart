@@ -6,6 +6,7 @@ class MessagesCollection extends DatabaseCollection {
   factory MessagesCollection() => _singleton;
   static const String MESSAGES_STORE = "messages";
   static const String INDEX_CONVERSATION = "conversation";
+  static const String INDEX_MESSAGE_ID = "message_id";
 
   MessagesCollection._internal() : super(MESSAGES_STORE);
 
@@ -17,6 +18,7 @@ class MessagesCollection extends DatabaseCollection {
         db.createObjectStore(MESSAGES_STORE, keyPath: 'gid');
     store.createIndex(INDEX_CONVERSATION, ['conversationId', 'sent'],
         unique: false);
+    store.createIndex(INDEX_MESSAGE_ID, 'messageIdHeader', unique: false);
   }
 
   Stream<MessageRecord> listByConversation(String conversationId) {
@@ -43,10 +45,11 @@ class MessagesCollection extends DatabaseCollection {
 
   Future<MessageRecord> add(String groupId, String conversationId,
       DateTime created, DateTime sent, String fromEmail, List<String> toEmail,
-      List<String> ccEmail, String subject, String htmlContent) {
+      List<String> ccEmail, String subject, String htmlContent,
+      String messageIdHeader) {
     MessageRecord record = new MessageRecord.fromFields(generateUid(), groupId,
         conversationId, created, sent, fromEmail, toEmail, ccEmail, subject,
-        htmlContent);
+        htmlContent, messageIdHeader, null, null);
     return _transaction(rw: true).then((store) {
       return store.add(record.toDb()).then((_) {
         return record;
@@ -67,11 +70,16 @@ class MessageRecord extends DatabaseRecord with WithGuid {
   @export List<String> ccEmail;
   @export String subject;
   @export String htmlContent;
+  @export String messageIdHeader;
+  @export String linkedAccountId;
+  @export String linkedAccountMessageId;
 
   MessageRecord();
 
   MessageRecord.fromFields(String this.gid, String this.groupId,
       String this.conversationId, DateTime this.created, DateTime this.sent,
       String this.fromEmail, List<String> this.toEmail,
-      List<String> this.ccEmail, String this.subject, String this.htmlContent);
+      List<String> this.ccEmail, String this.subject, String this.htmlContent,
+      String this.messageIdHeader, String this.linkedAccountId,
+      String this.linkedAccountMessageId);
 }
