@@ -18,7 +18,7 @@ main() {
       MailBuild part2 = build.createChild("text/html");
       part2.setContentString("<p>This is a test</p>");
       String mime = build.build();
-      print(mime);
+      expect(mime, contains("This is a test"));
     });
   });
 }

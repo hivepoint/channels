@@ -29,7 +29,5 @@ class MailBuild {
 
   MailBuild setContentBinary(Uint8List content) => new MailBuild._fromJs(_o.callMethod('setContent', [content]));
 
-  String build() { 
-    return _o.callMethod('build', []); 
-  }
+  String build() => _o.callMethod('build', []); 
 }
