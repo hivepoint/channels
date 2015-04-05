@@ -1,11 +1,6 @@
-// Copyright (c) 2015, <your name>. All rights reserved. Use of this source code
-// is governed by a BSD-style license that can be found in the LICENSE file.
-
-/// The email library.
-///
-/// This is an awesome library. More dartdocs go here.
 library email;
 
-// TODO: Export any libraries intended for clients of this package.
+import 'dart:js';
+import 'dart:typed_data';
 
-export 'src/email_base.dart';
+part 'src/mailbuild.dart';
