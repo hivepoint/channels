@@ -1,14 +1,15 @@
 part of chnls_core;
 
 abstract class Conversation {
-  String gid;
-  DateTime created;
-  String name;
-  Set<Contact> people;
-  Stream<Message> messages;
-  Stream<DraftMessage> drafts;
+  String get gid;
+  DateTime get created;
+  DateTime get lastMessage;
+  String get subject;
   
-  Stream<Message> onNewMessage();
+  Future<Group> get group;
+
+  Stream<Message> get messages;
   
-  Future<DraftMessage> createDraftMessage();
+  Future<MessageDraft> createDraftMessage();
+  Stream<MessageDraft> get drafts;
 }

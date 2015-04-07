@@ -64,13 +64,13 @@ class DbGmailMessageV2 extends Object with Exportable implements MessageV2 {
   }
 }
 
-class MessageService {
-  static final MessageService _singleton = new MessageService._internal();
-  factory MessageService() => _singleton;
+class MessageServiceV0 {
+  static final MessageServiceV0 _singleton = new MessageServiceV0._internal();
+  factory MessageServiceV0() => _singleton;
   idb.IdbFactory _idb;
   static const String MESSAGES_STORE = "messages";
 
-  MessageService._internal() {
+  MessageServiceV0._internal() {
     _idb = window.indexedDB;
   }
 

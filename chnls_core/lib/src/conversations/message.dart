@@ -1,20 +1,19 @@
 part of chnls_core;
 
 abstract class Message {
-  String gid;
-  DateTime created;
-  DateTime sent;
-  DateTime lastUpdated;
-  Contact from;
-  Set<Contact> to;
-  Set<Contact> cc;
-  String preamble;
-  String subject;
-  String htmlContent;
+  String get gid;
+  DateTime get created;
+  DateTime get sent;
+  Contact get from;
+  Set<Contact> get to;
+  Set<Contact> get cc;
+  String get preamble; 
+  String get subject;
+  String get htmlContent;
 }
 
 abstract class DraftMessage {
-  Conversation conversation;
+  Future<Conversation> get conversation;
   Future<Message> send();
   Future cancel();
 }

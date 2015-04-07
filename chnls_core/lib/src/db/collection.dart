@@ -1,17 +1,9 @@
 part of chnls_core;
 
-const String INDEX_GID = "gid";
-
 typedef Object DatabaseRecordUpdater(Object recordValue);
 
 abstract class DatabaseCollection {
   String collectionName;
-
-  Future insert(DatabaseRecord record) {
-    return _transaction(rw: true).then((idb.ObjectStore store) {
-      return store.put(record.toDb());
-    });
-  }
 
   DatabaseCollection(String this.collectionName);
 
@@ -29,15 +21,21 @@ abstract class DatabaseCollection {
     });
   }
 
+  Future removeById(String gid) {
+    return _transaction(rw: true).then((store) {
+      return store.delete(gid);
+    });
+  }
+
   Future removeAll() {
     return _transaction(rw: true).then((store) {
       store.clear();
     });
   }
-  
+
   Future fetchAndUpdate(String id, DatabaseRecordUpdater updater) {
     return _transaction(rw: true).then((idb.ObjectStore store) {
-      return store.index(INDEX_GID).get(id).then((value) {
+      return store.getObject(id).then((value) {
         return store.put(updater(value));
       });
     });
@@ -52,7 +50,6 @@ abstract class DatabaseRecord extends Object with Exportable {
   }
 
   Map toDb() {
-    return this.toMap();
+    return toMap();
   }
-  
 }

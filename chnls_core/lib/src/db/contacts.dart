@@ -1,8 +1,7 @@
 part of chnls_core;
 
 class ContactsCollection extends DatabaseCollection {
-  static final ContactsCollection _singleton =
-      new ContactsCollection._internal();
+  static final ContactsCollection _singleton = new ContactsCollection._internal();
   factory ContactsCollection() => _singleton;
   static const String CONTACTS_STORE = "contacts";
   static const String INDEX_EMAIL = "email";
@@ -13,20 +12,17 @@ class ContactsCollection extends DatabaseCollection {
     if (db.objectStoreNames.contains(CONTACTS_STORE)) {
       db.deleteObjectStore(CONTACTS_STORE);
     }
-    idb.ObjectStore store =
-        db.createObjectStore(CONTACTS_STORE, autoIncrement: true);
-    store.createIndex(INDEX_GID, INDEX_GID, unique: true);
+    idb.ObjectStore store = db.createObjectStore(CONTACTS_STORE, keyPath: 'gid');
     store.createIndex(INDEX_EMAIL, INDEX_EMAIL, unique: true);
   }
 
-  Stream<Contact> listAll() {
-    StreamController<Contact> controller = new StreamController<Contact>();
+  Stream<ContactRecord> listAll() {
+    StreamController<ContactRecord> controller = new StreamController<ContactRecord>();
     _transaction().then((store) {
       store.openCursor(autoAdvance: true).listen((idb.CursorWithValue value) {
         ContactRecord record = new ContactRecord();
         record.fromDb(value.value);
-        Contact contact = new ContactImpl.fromDb(record);
-        controller.add(contact);
+        controller.add(record);
       }).onDone(() {
         controller.close();
       });
@@ -34,20 +30,18 @@ class ContactsCollection extends DatabaseCollection {
     return controller.stream;
   }
 
-  Stream<Contact> listByIds(Set<String> contactIds) {
-    StreamController<Contact> controller = new StreamController<Contact>();
+  Stream<ContactRecord> listByIds(Iterable<String> contactIds) {
+    StreamController<ContactRecord> controller = new StreamController<ContactRecord>();
     if (contactIds.isEmpty) {
       controller.close();
     } else {
       int count = 0;
       _transaction().then((store) {
         contactIds.forEach((contactId) {
-          store.index(INDEX_GID);
           store.getObject(contactId).then((Object value) {
             ContactRecord record = new ContactRecord();
             record.fromDb(value);
-            Contact contact = new ContactImpl.fromDb(record);
-            controller.add(contact);
+            controller.add(record);
             count++;
             if (count == contactIds.length) {
               controller.close();
@@ -58,36 +52,63 @@ class ContactsCollection extends DatabaseCollection {
     }
     return controller.stream;
   }
-  
+
+  Future<ContactRecord> getByEmail(String emailAddress) {
+    return _transaction().then((store) {
+      return store.index(INDEX_EMAIL).get(emailAddress.toLowerCase()).then((r) {
+        ContactRecord record = new ContactRecord();
+        record.fromDb(r);
+        return record;
+      });
+    });
+  }
+
+  Stream<ContactRecord> listByEmailAddresses(Iterable<String> emailAddresses) {
+    StreamController<ContactRecord> controller = new StreamController<ContactRecord>();
+    if (emailAddresses.isEmpty) {
+      controller.close();
+    } else {
+      int count = 0;
+      _transaction().then((store) {
+        emailAddresses.forEach((emailAddress) {
+          store.index(INDEX_EMAIL).get(emailAddress.toLowerCase()).then((r) {
+            ContactRecord record = new ContactRecord();
+            record.fromDb(r);
+            controller.add(record);
+            count++;
+            if (count == emailAddresses.length) {
+              controller.close();
+            }
+          });
+        });
+      });
+    }
+    return controller.stream;
+  }
+
+  Future<ContactRecord> add(bool isMe, String emailAddress, String name, String imageUri) {
+    ContactRecord record = new ContactRecord.fromFields(generateUid(), isMe, emailAddress.toLowerCase(), name, new DateTime.now(), imageUri);
+    return _transaction(rw: true).then((store) {
+      return store.add(record.toDb()).then((_) {
+        return record;
+      });
+    });
+  }
 }
 
 @export
 class ContactRecord extends DatabaseRecord with WithGuid {
+  @export String gid;
   @export String email;
   @export String emailWithCase;
   @export String name;
   @export DateTime created;
   @export String imageUri;
+  @export bool isMe;
 
   ContactRecord();
 
-  ContactRecord.fromFields(String gid, String this.emailWithCase,
-      String this.name, DateTime this.created, String this.imageUri) {
-    this.gid = gid;
+  ContactRecord.fromFields(String this.gid, bool this.isMe, String this.emailWithCase, String this.name, DateTime this.created, String this.imageUri) {
     this.email = emailWithCase.toLowerCase();
   }
-}
-
-class ContactImpl extends Contact {
-  ContactRecord _record;
-
-  ContactImpl.fromDb(ContactRecord record) {
-    _record = record;
-  }
-
-  String get gid => _record.gid;
-  DateTime get created => _record.created;
-  String get name => _record.name;
-  String get emailAddress => _record.emailWithCase;
-  String get imageUri => _record.imageUri;
 }

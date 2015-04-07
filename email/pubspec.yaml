@@ -1,0 +1,15 @@
+name: email
+description: >
+  A library useful for applications or for sharing on pub.dartlang.org.
+version: 0.0.1
+#author: <your name> <email@example.com>
+#homepage: https://www.example.com
+#dependencies:
+#  lib_name: any
+dev_dependencies:
+  unittest: any
+dependencies:
+  js: any
+  browser: any
+  typed_data: any
+  http: any  
