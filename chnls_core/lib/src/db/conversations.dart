@@ -46,9 +46,9 @@ class ConversationsCollection extends DatabaseCollection {
   
   Future<ConversationRecord> getById(String id) {
     return _transaction().then((store) {
-      return store.index(INDEX_GID).get(id).then((idb.CursorWithValue cursor) {
+      return store.getObject(id).then((r) {
         ConversationRecord record = new ConversationRecord();
-        record.fromDb(cursor.value);
+        record.fromDb(r);
         return record;
       });
     });

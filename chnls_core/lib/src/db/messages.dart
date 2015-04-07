@@ -43,13 +43,7 @@ class MessagesCollection extends DatabaseCollection {
     return controller.stream;
   }
 
-  Future<MessageRecord> add(String groupId, String conversationId,
-      DateTime created, DateTime sent, String fromEmail, List<String> toEmail,
-      List<String> ccEmail, String subject, String htmlContent,
-      String messageIdHeader) {
-    MessageRecord record = new MessageRecord.fromFields(generateUid(), groupId,
-        conversationId, created, sent, fromEmail, toEmail, ccEmail, subject,
-        htmlContent, messageIdHeader, null, null);
+  Future<MessageRecord> add(MessageRecord record) {
     return _transaction(rw: true).then((store) {
       return store.add(record.toDb()).then((_) {
         return record;
@@ -73,6 +67,7 @@ class MessageRecord extends DatabaseRecord with WithGuid {
   @export String messageIdHeader;
   @export String linkedAccountId;
   @export String linkedAccountMessageId;
+  @export String linkedAccountThreadId;
 
   MessageRecord();
 
@@ -81,5 +76,5 @@ class MessageRecord extends DatabaseRecord with WithGuid {
       String this.fromEmail, List<String> this.toEmail,
       List<String> this.ccEmail, String this.subject, String this.htmlContent,
       String this.messageIdHeader, String this.linkedAccountId,
-      String this.linkedAccountMessageId);
+      String this.linkedAccountMessageId, String this.linkedAccountThreadId);
 }

@@ -7,7 +7,7 @@ String generateUid() {
 
 abstract class WithGuid {
   String get gid;
-  
+
   int get hashCode {
     return gid.hashCode;
   }
@@ -21,9 +21,13 @@ abstract class WithGuid {
   }
 }
 
-
 class DuplicateException implements Exception {
   final String message;
   DuplicateException(this.message);
   String toString() => message;
+}
+
+String base64Encode(String value) {
+  var bytes = UTF8.encode(value);
+  return CryptoUtils.bytesToBase64(bytes, urlSafe: true);
 }

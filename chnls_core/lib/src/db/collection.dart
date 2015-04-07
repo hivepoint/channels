@@ -1,7 +1,5 @@
 part of chnls_core;
 
-const String INDEX_GID = "gid";
-
 typedef Object DatabaseRecordUpdater(Object recordValue);
 
 abstract class DatabaseCollection {

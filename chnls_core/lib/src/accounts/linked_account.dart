@@ -9,4 +9,6 @@ abstract class LinkedAccount {
   String get address;
   String get name;
   LinkedAccountType get type;
+  
+  Future<DeliverableMessage> deliverEmail(DeliverableMessage message);
 }

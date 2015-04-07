@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:googleapis_auth/auth_browser.dart';
 import 'package:googleapis/gmail/v1.dart' as gmail;
 
+AccountService accountService = new AccountService();
 GroupService groupService = new GroupService();
 ContactService contactService = new ContactService();
 ConversationService conversationService = new ConversationService();
@@ -23,25 +24,45 @@ main() {
 //      });
 //    });
 
-    group('Gmail', () {
-      test('profile', () {
-        return new GoogleAuth().authorizedClient().then((AutoRefreshingAuthClient client){
-          gmail.GmailApi api = new gmail.GmailApi(client);
-          var request = new gmail.Draft();
-          
-          api.users.drafts.create(request, "me")
-            .then((Draft draft) {
-            
-          });
-          api.users.getProfile("me")
-          .then((gmail.Profile profile) {
-            print(profile);
-          });
-        });
-      });
-    });
+//    group('Gmail', () {
+//      test('profile', () {
+//        return new GoogleAuth().authorizedClient().then((AutoRefreshingAuthClient client){
+//          gmail.GmailApi api = new gmail.GmailApi(client);
+//          var request = new gmail.Draft();
+//
+//          api.users.drafts.create(request, "me")
+//            .then((Draft draft) {
+//
+//          });
+//          api.users.getProfile("me")
+//          .then((gmail.Profile profile) {
+//            print(profile);
+//          });
+//        });
+//      });
+//    });
 
-    //  group('Start-from-empty tests', () {
+  
+  group('Gmail send', () {
+    setUp(() {
+      return new DatabaseService().deleteDatabase();
+    });
+    
+    test('send', () {
+      return accountService
+          .addLinkedAccount("kduffie@hivepoint.com", "Kingston at HivePoint", LinkedAccountType.GMAIL)
+          .then((_) => contactService.addContact(true, "kduffie@hivepoint.com", "Kingston at Hivepoint", null))
+          .then((_) => contactService.addContact(false, "kingston.duffie@gmail.com", "Kingston at Gmail", null))
+          .then((_) => groupService.addGroup("group1", contactService.contacts(), '#f0f'))
+          .then((Group group) => group.createConversation("subject1"))
+          .then((Conversation conversation) => conversation.createDraftMessage())
+          .then((MessageDraft draft) => draft.updateContent('<p>This is an <b>important</b> conversation!</p>'))
+          .then((MessageDraft draft) => draft.send())
+          .then((Message message) => print(message));
+    });
+  });
+
+  //  group('Start-from-empty tests', () {
 //    setUp(() {
 //      return cleanGroups().then((_) {
 //        return cleanContacts();
@@ -81,11 +102,7 @@ main() {
 
   group('Single group tests', () {
     setUp(() {
-      return cleanGroups()
-          .then((_) => cleanContacts())
-          .then((_) => cleanConversations())
-          .then((_) => cleanMessages())
-          .then((_) => cleanMessageDrafts());
+      return cleanGroups().then((_) => cleanContacts()).then((_) => cleanConversations()).then((_) => cleanMessages()).then((_) => cleanMessageDrafts());
     });
   });
 

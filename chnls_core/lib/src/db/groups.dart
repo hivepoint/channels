@@ -47,8 +47,7 @@ class GroupsCollection extends DatabaseCollection {
       String name, List<String> contactIds, String tileColor) {
     DateTime now = new DateTime.now();
     GroupRecord record = new GroupRecord.fromFields(
-        generateUid(), name, now, now, tileColor);
-    record.contactIds.addAll(contactIds);
+        generateUid(), name, now, now, tileColor, contactIds);
     return _transaction(rw: true).then((store) {
       return store.add(record.toDb()).then((_) {
         return record;
@@ -58,9 +57,9 @@ class GroupsCollection extends DatabaseCollection {
   
   Future<GroupRecord> getById(String groupId) {
     return _transaction().then((store) {
-      return store.index(INDEX_GID).get(groupId).then((idb.CursorWithValue cursor) {
+      return store.getObject(groupId).then((r) {
         GroupRecord record = new GroupRecord();
-        record.fromDb(cursor.value);
+        record.fromDb(r);
         return record;
       });
     });
@@ -73,10 +72,10 @@ class GroupRecord extends DatabaseRecord with WithGuid {
   @export String name;
   @export DateTime created;
   @export DateTime lastUpdated;
-  @export Set<String> contactIds = new Set<String>();
+  @export List<String> contactIds = new List<String>();
   @export String tileColor;
 
   GroupRecord();
   GroupRecord.fromFields(String this.gid, String this.name, DateTime this.created, DateTime this.lastUpdated,
-      String this.tileColor);
+      String this.tileColor, List<String> this.contactIds);
 }

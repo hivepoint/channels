@@ -46,8 +46,8 @@ class CreateGroupDialog extends PolymerElement {
         } else {
             _decorator.isInvalid = false;
             showing = false;
-            GroupsService service = new GroupsService();
-            service.addGroup(name, new Set<Contact>()).then((Group g) {
+            GroupService service = new GroupService();
+            service.addGroup(name, new ContactService().contacts(), "#777").then((Group g) {
                 _controller.add(g);
             });
         }

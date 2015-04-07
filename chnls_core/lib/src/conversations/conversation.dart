@@ -12,6 +12,4 @@ abstract class Conversation {
   
   Future<MessageDraft> createDraftMessage();
   Stream<MessageDraft> get drafts;
-//  
-//  Stream<Message> onNewMessage();
 }

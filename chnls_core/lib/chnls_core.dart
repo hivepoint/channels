@@ -5,9 +5,14 @@ library chnls_core;
 import 'dart:async';
 import 'dart:html';
 import 'dart:indexed_db' as idb;
+import 'dart:collection';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:exportable/exportable.dart';
 import 'package:googleapis_auth/auth_browser.dart' as auth;
+import 'package:googleapis/gmail/v1.dart' as gmail;
 import 'package:uuid/uuid.dart';
+import 'package:email/email.dart';
 
 part 'src/chnls_core_msgs.dart';
 part 'src/lifecycle.dart';
@@ -37,6 +42,8 @@ part 'src/db/messages.dart';
 part 'src/db/message_drafts.dart';
 part 'src/db/linked_accounts.dart';
 
-part 'src/google/google.dart';
+part 'src/google/google_auth.dart';
+part 'src/google/gmail_client.dart';
+part 'src/util/constants.dart';
 
 part 'src/util/utils.dart';

@@ -1,10 +1,10 @@
 part of chnls_core;
 
 class LinkedAccountsCollection extends DatabaseCollection {
-  static final LinkedAccountsCollection _singleton =
-      new LinkedAccountsCollection._internal();
+  static final LinkedAccountsCollection _singleton = new LinkedAccountsCollection._internal();
   factory LinkedAccountsCollection() => _singleton;
   static const String LINKED_ACCOUNTS_STORE = "linked_accounts";
+  static const String INDEX_TYPE_AND_ADDRESS = "type_and_address";
 
   LinkedAccountsCollection._internal() : super(LINKED_ACCOUNTS_STORE);
 
@@ -12,12 +12,12 @@ class LinkedAccountsCollection extends DatabaseCollection {
     if (db.objectStoreNames.contains(LINKED_ACCOUNTS_STORE)) {
       db.deleteObjectStore(LINKED_ACCOUNTS_STORE);
     }
-    db.createObjectStore(LINKED_ACCOUNTS_STORE, keyPath: 'gid');
+    var store = db.createObjectStore(LINKED_ACCOUNTS_STORE, keyPath: 'gid');
+    store.createIndex(INDEX_TYPE_AND_ADDRESS, ['type_string', 'address'], unique: true);
   }
 
   Stream<LinkedAccountRecord> listAll() {
-    StreamController<LinkedAccountRecord> controller =
-        new StreamController<LinkedAccountRecord>();
+    StreamController<LinkedAccountRecord> controller = new StreamController<LinkedAccountRecord>();
     _transaction().then((store) {
       store.openCursor(autoAdvance: true).listen((idb.CursorWithValue value) {
         LinkedAccountRecord record = new LinkedAccountRecord();
@@ -30,27 +30,36 @@ class LinkedAccountsCollection extends DatabaseCollection {
     return controller.stream;
   }
 
-  Future<LinkedAccountRecord> add(
-      String address, String name, LinkedAccountType type) {
-    LinkedAccountRecord record =
-        new LinkedAccountRecord.fromFields(generateUid(), address, name, type);
+  Future<LinkedAccountRecord> add(String address, String name, LinkedAccountType type) {
+    LinkedAccountRecord record = new LinkedAccountRecord.fromFields(generateUid(), address.toLowerCase(), name, type);
     return _transaction(rw: true).then((store) {
       return store.add(record.toDb()).then((_) {
         return record;
       });
     });
   }
-  
+
   Future<LinkedAccountRecord> getById(String id) {
     return _transaction().then((store) {
-      return store.index(INDEX_GID).get(id).then((idb.CursorWithValue cursor) {
+      return store.getObject(id).then((r) {
         LinkedAccountRecord record = new LinkedAccountRecord();
-        record.fromDb(cursor.value);
+        record.fromDb(r);
         return record;
       });
     });
   }
 
+  Future<LinkedAccountRecord> getByTypeAndAddress(LinkedAccountType type, String emailAddress) {
+    return _transaction().then((store) {
+      return store.index(INDEX_TYPE_AND_ADDRESS).get([type.toString(), emailAddress.toLowerCase()]).then((r) {
+        LinkedAccountRecord record = new LinkedAccountRecord();
+        record.fromDb(r);
+        return record;
+      }).catchError((e) {
+        print(e);
+      });
+    });
+  }
 }
 
 @export
@@ -62,17 +71,17 @@ class LinkedAccountRecord extends DatabaseRecord with WithGuid {
 
   LinkedAccountRecord();
 
-  LinkedAccountRecord.fromFields(String this.gid, String this.address,
-      String this.name, LinkedAccountType type) {
+  LinkedAccountRecord.fromFields(String this.gid, String this.address, String this.name, LinkedAccountType type) {
     this.type_string = type.toString();
   }
 
   LinkedAccountType get type {
+    LinkedAccountType result = LinkedAccountType.UNKNOWN;
     LinkedAccountType.values.forEach((LinkedAccountType value) {
       if (value.toString() == type_string) {
-        return value;
+        result = value;
       }
     });
-    return LinkedAccountType.UNKNOWN;
+    return result;
   }
 }

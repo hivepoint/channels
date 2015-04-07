@@ -27,15 +27,10 @@ class GroupService extends Service {
     return controller.stream;
   }
 
-  Future<Group> addGroup(
-      String name, Iterable<Contact> people, String tileColor) {
+  Future<Group> addGroup(String name, Stream<Contact> people, String tileColor) {
     List<String> contactIds = new List<String>();
-    if (people != null) {
-      people.forEach((Contact contact) {
-        contactIds.add(contact.gid);
-      });
-    }
-    return _store.add(name, contactIds, tileColor).then((record) {
+    return people.forEach((Contact contact) => contactIds.add(contact.gid))
+        .then((_) => _store.add(name, contactIds, tileColor)).then((record) {
       Group group = new GroupImpl._fromDb(record);
       _groupAddedSource.add(group);
       return group;
@@ -65,31 +60,26 @@ class GroupImpl extends Group {
   GroupImpl._fromDb(GroupRecord record) {
     _record = record;
     if (_record.contactIds == null) {
-      _record.contactIds = new Set<String>();
+      _record.contactIds = new List<String>();
     }
   }
 
   String get gid => _record.gid;
   DateTime get created => _record.created;
   DateTime get lastUpdated => _record.lastUpdated;
-  String get name  => _record.name;
+  String get name => _record.name;
   String get tileColor => _record.tileColor;
 
   Future<Group> setTileColor(String value) {
     GroupsCollection collection = new GroupsCollection();
-    return collection
-        .setTileColor(_record.gid, value)
-        .then((GroupRecord revisedRecord) {
+    return collection.setTileColor(_record.gid, value).then((GroupRecord revisedRecord) {
       return new GroupImpl._fromDb(revisedRecord);
     });
   }
 
-  Stream<Contact> get people =>
-      new ContactService()._getContactsById(_record.contactIds);
+  Stream<Contact> get people => new ContactService()._getContactsById(_record.contactIds);
 
-  Stream<Conversation> get conversations =>
-      new ConversationService()._conversationsByGroup(_record.gid);
+  Stream<Conversation> get conversations => new ConversationService()._conversationsByGroup(_record.gid);
 
-  Future<Conversation> createConversation(String subject) =>
-      new ConversationService()._addConversation(_record.gid, subject);
+  Future<Conversation> createConversation(String subject) => new ConversationService()._addConversation(_record.gid, subject);
 }

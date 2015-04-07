@@ -1,8 +1,7 @@
 part of chnls_core;
 
 class ContactsCollection extends DatabaseCollection {
-  static final ContactsCollection _singleton =
-      new ContactsCollection._internal();
+  static final ContactsCollection _singleton = new ContactsCollection._internal();
   factory ContactsCollection() => _singleton;
   static const String CONTACTS_STORE = "contacts";
   static const String INDEX_EMAIL = "email";
@@ -13,8 +12,7 @@ class ContactsCollection extends DatabaseCollection {
     if (db.objectStoreNames.contains(CONTACTS_STORE)) {
       db.deleteObjectStore(CONTACTS_STORE);
     }
-    idb.ObjectStore store =
-        db.createObjectStore(CONTACTS_STORE, keyPath: 'gid');
+    idb.ObjectStore store = db.createObjectStore(CONTACTS_STORE, keyPath: 'gid');
     store.createIndex(INDEX_EMAIL, INDEX_EMAIL, unique: true);
   }
 
@@ -32,7 +30,7 @@ class ContactsCollection extends DatabaseCollection {
     return controller.stream;
   }
 
-  Stream<ContactRecord> listByIds(Set<String> contactIds) {
+  Stream<ContactRecord> listByIds(Iterable<String> contactIds) {
     StreamController<ContactRecord> controller = new StreamController<ContactRecord>();
     if (contactIds.isEmpty) {
       controller.close();
@@ -54,18 +52,18 @@ class ContactsCollection extends DatabaseCollection {
     }
     return controller.stream;
   }
-  
+
   Future<ContactRecord> getByEmail(String emailAddress) {
     return _transaction().then((store) {
-      return store.index(INDEX_EMAIL).get(emailAddress.toLowerCase()).then((idb.CursorWithValue cursor) {
-        GroupRecord record = new GroupRecord();
-        record.fromDb(cursor.value);
+      return store.index(INDEX_EMAIL).get(emailAddress.toLowerCase()).then((r) {
+        ContactRecord record = new ContactRecord();
+        record.fromDb(r);
         return record;
       });
     });
   }
-  
-  Stream<ContactRecord> listByEmailAddresses(Set<String> emailAddresses) {
+
+  Stream<ContactRecord> listByEmailAddresses(Iterable<String> emailAddresses) {
     StreamController<ContactRecord> controller = new StreamController<ContactRecord>();
     if (emailAddresses.isEmpty) {
       controller.close();
@@ -73,9 +71,9 @@ class ContactsCollection extends DatabaseCollection {
       int count = 0;
       _transaction().then((store) {
         emailAddresses.forEach((emailAddress) {
-          store.index(INDEX_EMAIL).get(emailAddress.toLowerCase()).then((Object value) {
+          store.index(INDEX_EMAIL).get(emailAddress.toLowerCase()).then((r) {
             ContactRecord record = new ContactRecord();
-            record.fromDb(value);
+            record.fromDb(r);
             controller.add(record);
             count++;
             if (count == emailAddresses.length) {
@@ -85,18 +83,17 @@ class ContactsCollection extends DatabaseCollection {
         });
       });
     }
-    return controller.stream;    
+    return controller.stream;
   }
-  
-  Future<ContactRecord> add(String emailAddress, String name, String imageUri) {
-    ContactRecord record = new ContactRecord.fromFields(generateUid(), emailAddress.toLowerCase(), name, new DateTime.now(), imageUri);
-    return _transaction(rw:true).then((store) {
+
+  Future<ContactRecord> add(bool isMe, String emailAddress, String name, String imageUri) {
+    ContactRecord record = new ContactRecord.fromFields(generateUid(), isMe, emailAddress.toLowerCase(), name, new DateTime.now(), imageUri);
+    return _transaction(rw: true).then((store) {
       return store.add(record.toDb()).then((_) {
         return record;
       });
     });
   }
-
 }
 
 @export
@@ -107,12 +104,11 @@ class ContactRecord extends DatabaseRecord with WithGuid {
   @export String name;
   @export DateTime created;
   @export String imageUri;
+  @export bool isMe;
 
   ContactRecord();
 
-  ContactRecord.fromFields(String this.gid, String this.emailWithCase,
-      String this.name, DateTime this.created, String this.imageUri) {
+  ContactRecord.fromFields(String this.gid, bool this.isMe, String this.emailWithCase, String this.name, DateTime this.created, String this.imageUri) {
     this.email = emailWithCase.toLowerCase();
   }
 }
-

@@ -6,4 +6,5 @@ abstract class Contact {
   String get name;
   String get imageUri;
   DateTime get created;
+  bool get isMe;
 }
