@@ -5,7 +5,7 @@ abstract class EmailHeaders {
   static const String TO = "To";
   static const String CC = "Cc";
   static const String BCC = "Bcc";
-  static const String MESSAGE_ID = "Message-ID";
+  static const String MESSAGE_ID = "Message-Id";
   static const String SUBJECT = "Subject";
   static const String REPLY_TO = "Reply-To";
   static const String SENDER = "Sender";

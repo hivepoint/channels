@@ -24,13 +24,14 @@ class GmailClient {
         .then((gmail.Message gmailMessage) {
       print("Processing fetched message...");
       gmailMessage.payload.headers.forEach((gmail.MessagePartHeader header) {
-        if (header.name == EmailHeaders.MESSAGE_ID) {
+        if (header.name.toLowerCase() == EmailHeaders.MESSAGE_ID.toLowerCase()) {
           message.messageIdHeader = header.value;
         }
       });
       message.linkedAccountId = linkedAccountId;
       message.linkedAccountMessageId = gmailMessage.id;
       message.linkedAccountThreadId = gmailMessage.threadId;
+      message.sent = new DateTime.now();
       return message;
     });
   }
